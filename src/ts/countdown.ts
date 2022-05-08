@@ -43,10 +43,12 @@ export class Countdown {
 		}
 
 		this.ctx.save();
-		this.ctx.fillStyle = `rgba(255,255,255,${this.flashOpacity})`;
+		this.ctx.fillStyle = `rgba(180,70,70,${this.flashOpacity})`;
 		this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 		this.ctx.fillStyle = '#ff4d4d';
-		this.ctx.font = `${this.ctx.canvas.height / 1.5}px angryblue`;
+		this.ctx.shadowColor = '#ff4d4d';
+		this.ctx.shadowBlur = 20;
+		this.ctx.font = `${this.ctx.canvas.height / 1.5}px PressStart2P`;
 		this.ctx.textAlign = 'center';
 		this.ctx.textBaseline = 'middle';
 		this.ctx.fillText(this.count.toString(), this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 100);

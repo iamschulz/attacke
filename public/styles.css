@@ -1,10 +1,10 @@
 @font-face {
-	font-family: 'angryblue';
-	src: url(./assets/angryblue.woff2) format('woff2');
+	font-family: 'PressStart2P';
+	src: url(./assets/PressStart2P.woff2) format('woff2');
 }
 
 :root {
-	--background-color: #0c071c;
+	--background-color: #282b38;
 	--font-color: #ffffff;
 	--accent-color: #ff4d4d;
 }
@@ -18,11 +18,12 @@ body {
 :is(h1, h2, h3, h4, h5, h6) {
 	color: var(--accent-color);
 	text-align: center;
-	font-family: 'angryblue';
+	font-family: 'PressStart2P';
 }
 
 :is(h1) {
 	text-transform: uppercase;
+	text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 :is(a) {
@@ -39,4 +40,5 @@ body {
 	max-width: calc(80vh * 16 / 9);
 	aspect-ratio: 16/9;
 	margin: auto;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }

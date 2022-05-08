@@ -23,10 +23,12 @@ export class Gui {
 	draw() {
 		this.ctx.save();
 		this.score.forEach((score, player) => {
+			this.ctx.shadowColor = config.theme.player[player];
+			this.ctx.shadowBlur = 8;
 			this.ctx.fillStyle = config.theme.player[player];
-			this.ctx.font = `100px angryblue`;
+			this.ctx.font = `80px PressStart2P`;
 			this.ctx.textAlign = player === 0 ? 'right' : 'left';
-			this.ctx.fillText(score.toString(), this.ctx.canvas.width / 2 + (100 * (player === 0 ? -1 : 1)) / 2, 100);
+			this.ctx.fillText(score.toString(), this.ctx.canvas.width / 2 + (100 * (player === 0 ? -1 : 1)) / 2, 110);
 		});
 		this.ctx.restore();
 	}

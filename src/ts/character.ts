@@ -41,7 +41,7 @@ export class Character {
 		this.position = this.getInitialPosition();
 		this.orientation = 0;
 		this.speed = 1;
-		this.range = 100;
+		this.range = 150;
 		this.attackDuration = 200;
 		this.blockDuration = 300;
 		this.cooldownDuration = 800;
@@ -340,10 +340,14 @@ export class Character {
 		this.ctx.rotate(this.orientation);
 
 		// body
+		this.ctx.shadowColor = config.theme.player[this.player];
+		this.ctx.shadowBlur = 10;
 		this.ctx.fillStyle = config.theme.player[this.player];
 		this.ctx.fillRect(this.size / -2, this.size / -2, this.size, this.size);
 
 		// face
+		this.ctx.shadowColor = '#ff00ff';
+		this.ctx.shadowBlur = 8;
 		this.ctx.fillStyle = '#ff00ff';
 		this.ctx.fillRect(this.size / 2 - 20, this.size / -2, 20, this.size);
 
