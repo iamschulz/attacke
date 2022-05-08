@@ -1,0 +1,17 @@
+{
+	"name": "versus",
+	"version": "1.0.0",
+	"main": "main.ts",
+	"license": "GNU GPLv3",
+	"devDependencies": {
+		"esbuild": "^0.14.38",
+		"typescript": "^4.6.4"
+	},
+	"dependencies": {
+		"collider2d": "^1.1.1"
+	},
+	"scripts": {
+		"build": "./esbuild.js",
+		"watch": "./esbuild.js --watch"
+	}
+}

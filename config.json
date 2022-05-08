@@ -1,0 +1,25 @@
+{
+	"controls": [
+		{
+			"left": ["KeyA"],
+			"right": ["KeyD"],
+			"up": ["KeyW"],
+			"down": ["KeyS"],
+			"attack": ["KeyC"],
+			"block": ["ShiftLeft"]
+		},
+		{
+			"left": ["ArrowLeft"],
+			"right": ["ArrowRight"],
+			"up": ["ArrowUp"],
+			"down": ["ArrowDown"],
+			"attack": ["Space"],
+			"block": ["ShiftRight"]
+		}
+	],
+	"theme": {
+		"player": ["#58dbfc", "#fce958"],
+		"weapon": "#ff0000",
+		"shield": "#00ff00"
+	}
+}

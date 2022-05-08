@@ -1,0 +1,42 @@
+@font-face {
+	font-family: 'angryblue';
+	src: url(./assets/angryblue.woff2) format('woff2');
+}
+
+:root {
+	--background-color: #0c071c;
+	--font-color: #ffffff;
+	--accent-color: #ff4d4d;
+}
+
+body {
+	font-family: sans-serif;
+	background-color: var(--background-color);
+	color: var(--font-color);
+}
+
+:is(h1, h2, h3, h4, h5, h6) {
+	color: var(--accent-color);
+	text-align: center;
+	font-family: 'angryblue';
+}
+
+:is(h1) {
+	text-transform: uppercase;
+}
+
+:is(a) {
+	color: var(--accent-color);
+}
+
+#canvas {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	max-height: 80vh;
+	max-width: calc(80vh * 16 / 9);
+	aspect-ratio: 16/9;
+	margin: auto;
+}
