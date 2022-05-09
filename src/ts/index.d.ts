@@ -15,3 +15,19 @@ declare interface FinishEvent extends Event {
 		winner: number;
 	};
 }
+
+declare interface GamepadButtonEvent extends Event {
+	readonly detail?: {
+		gamepadId: number;
+		buttonIndex: number;
+		button: GamepadButton;
+	};
+}
+
+declare interface GamepadStickEvent extends Event {
+	readonly detail?: {
+		gamepadId: number;
+		stickIndex: number;
+		stick: coordinates;
+	};
+}

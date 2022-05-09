@@ -1,8 +1,8 @@
-import config from '../../config.json' assert { type: 'json' };
-import { Collider2d, Polygon, Vector } from 'collider2d';
-import { Game } from './main';
-import { clamp, rotate } from './util';
-import { Obstacle } from './obstacle';
+import config from "../../config.json" assert { type: "json" };
+import { Collider2d, Polygon, Vector } from "collider2d";
+import { Game } from "./main";
+import { clamp, rotate } from "./util";
+import { Obstacle } from "./obstacle";
 
 export class Character {
 	private ctx: CanvasRenderingContext2D;
@@ -23,8 +23,8 @@ export class Character {
 	private velocity: coordinates;
 	private obstacle: Obstacle;
 	private action: {
-		movingX: -1 | 0 | 1;
-		movingY: -1 | 0 | 1;
+		movingX: number;
+		movingY: number;
 		attacking: boolean;
 		blocking: boolean;
 		cooldown: boolean;
@@ -66,7 +66,7 @@ export class Character {
 			this.turn();
 		});
 
-		this.ctx.canvas.addEventListener('tick', () => {
+		this.ctx.canvas.addEventListener("tick", () => {
 			this.onNextTick();
 		});
 	}
@@ -75,7 +75,10 @@ export class Character {
 		if (this.player === 0) {
 			return { x: 50, y: 50 };
 		} else {
-			return { x: this.ctx.canvas.width - 50 - this.size, y: this.ctx.canvas.height - 50 - this.size };
+			return {
+				x: this.ctx.canvas.width - 50 - this.size,
+				y: this.ctx.canvas.height - 50 - this.size,
+			};
 		}
 	}
 
@@ -83,7 +86,10 @@ export class Character {
 		return new Obstacle(this.collider, this.obstacles, id, {
 			a: { x: this.position.x, y: this.position.y },
 			b: { x: this.position.x + this.size, y: this.position.y },
-			c: { x: this.position.x + this.size, y: this.position.y + this.size },
+			c: {
+				x: this.position.x + this.size,
+				y: this.position.y + this.size,
+			},
 			d: { x: this.position.x, y: this.position.y + this.size },
 		});
 	}
@@ -91,12 +97,12 @@ export class Character {
 	private registerControls(): void {
 		// move left
 		config.controls[this.player].left.forEach((key: string) => {
-			document.addEventListener('keydown', (event: KeyboardEvent) => {
+			document.addEventListener("keydown", (event: KeyboardEvent) => {
 				if (event.code === key && event.repeat === false) {
 					this.action.movingX = -1;
 				}
 			});
-			document.addEventListener('keyup', (event: KeyboardEvent) => {
+			document.addEventListener("keyup", (event: KeyboardEvent) => {
 				if (event.code === key) {
 					this.action.movingX = 0;
 				}
@@ -105,12 +111,12 @@ export class Character {
 
 		// move right
 		config.controls[this.player].right.forEach((key: string) => {
-			document.addEventListener('keydown', (event: KeyboardEvent) => {
+			document.addEventListener("keydown", (event: KeyboardEvent) => {
 				if (event.code === key && event.repeat === false) {
 					this.action.movingX = 1;
 				}
 			});
-			document.addEventListener('keyup', (event: KeyboardEvent) => {
+			document.addEventListener("keyup", (event: KeyboardEvent) => {
 				if (event.code === key) {
 					this.action.movingX = 0;
 				}
@@ -119,12 +125,12 @@ export class Character {
 
 		// move up
 		config.controls[this.player].up.forEach((key: string) => {
-			document.addEventListener('keydown', (event: KeyboardEvent) => {
+			document.addEventListener("keydown", (event: KeyboardEvent) => {
 				if (event.code === key && event.repeat === false) {
 					this.action.movingY = -1;
 				}
 			});
-			document.addEventListener('keyup', (event: KeyboardEvent) => {
+			document.addEventListener("keyup", (event: KeyboardEvent) => {
 				if (event.code === key) {
 					this.action.movingY = 0;
 				}
@@ -133,34 +139,84 @@ export class Character {
 
 		// move down
 		config.controls[this.player].down.forEach((key: string) => {
-			document.addEventListener('keydown', (event: KeyboardEvent) => {
+			document.addEventListener("keydown", (event: KeyboardEvent) => {
 				if (event.code === key && event.repeat === false) {
 					this.action.movingY = 1;
 				}
 			});
-			document.addEventListener('keyup', (event: KeyboardEvent) => {
+			document.addEventListener("keyup", (event: KeyboardEvent) => {
 				if (event.code === key) {
 					this.action.movingY = 0;
 				}
 			});
 		});
 
+		// move by stick
+		document.addEventListener(
+			"gamepadStickMove",
+			(event: GamepadStickEvent) => {
+				if (
+					event.detail.gamepadId !== this.player ||
+					event.detail.stickIndex !== 0
+				) {
+					return;
+				}
+
+				this.action.movingX = event.detail.stick.x;
+				this.action.movingY = event.detail.stick.y;
+			}
+		);
+
 		// attack
 		config.controls[this.player].attack.forEach((key: string) => {
-			document.addEventListener('keydown', (event: KeyboardEvent) => {
-				if (event.code === key && event.repeat === false && !this.action.cooldown) {
+			document.addEventListener("keydown", (event: KeyboardEvent) => {
+				if (
+					event.code === key &&
+					event.repeat === false &&
+					!this.action.cooldown
+				) {
 					this.action.attacking = true;
 				}
 			});
+
+			document.addEventListener(
+				"gamepadButtonDown",
+				(event: GamepadButtonEvent) => {
+					if (
+						event.detail.gamepadId === this.player &&
+						event.detail.buttonIndex === config.gamepad.attack &&
+						!this.action.cooldown
+					) {
+						this.action.attacking = true;
+					}
+				}
+			);
 		});
 
 		// block
 		config.controls[this.player].block.forEach((key: string) => {
-			document.addEventListener('keydown', (event: KeyboardEvent) => {
-				if (event.code === key && event.repeat === false && !this.action.cooldown) {
+			document.addEventListener("keydown", (event: KeyboardEvent) => {
+				if (
+					event.code === key &&
+					event.repeat === false &&
+					!this.action.cooldown
+				) {
 					this.action.blocking = true;
 				}
 			});
+
+			document.addEventListener(
+				"gamepadButtonDown",
+				(event: GamepadButtonEvent) => {
+					if (
+						event.detail.gamepadId === this.player &&
+						event.detail.buttonIndex === config.gamepad.block &&
+						!this.action.cooldown
+					) {
+						this.action.blocking = true;
+					}
+				}
+			);
 		});
 	}
 
@@ -170,7 +226,9 @@ export class Character {
 	}
 
 	private collide(): void {
-		const obstacles = this.obstacles.filter((obstacle) => obstacle.getId() !== this.obstacle.getId());
+		const obstacles = this.obstacles.filter(
+			(obstacle) => obstacle.getId() !== this.obstacle.getId()
+		);
 		obstacles.forEach((obstacle) => {
 			if (this.obstacle.collidesWith(obstacle)) {
 				this.velocity.x *= -1;
@@ -182,8 +240,10 @@ export class Character {
 
 	private move(): void {
 		const { position, velocity, action } = this;
-		const newX = position.x + action.movingX * this.speed + velocity.x * this.speed;
-		const newY = position.y + action.movingY * this.speed + velocity.y * this.speed;
+		const newX =
+			position.x + action.movingX * this.speed + velocity.x * this.speed;
+		const newY =
+			position.y + action.movingY * this.speed + velocity.y * this.speed;
 
 		position.x = newX;
 		position.y = newY;
@@ -208,12 +268,16 @@ export class Character {
 		});
 
 		this.velocity.x = clamp(
-			(action.movingX ? this.velocity.x + action.movingX : this.velocity.x * 0.8) * this.speed,
+			(action.movingX
+				? this.velocity.x + action.movingX
+				: this.velocity.x * 0.8) * this.speed,
 			this.maxVelocity * -1,
 			this.maxVelocity
 		);
 		this.velocity.y = clamp(
-			(action.movingY ? this.velocity.y + action.movingY : this.velocity.y * 0.8) * this.speed,
+			(action.movingY
+				? this.velocity.y + action.movingY
+				: this.velocity.y * 0.8) * this.speed,
 			this.maxVelocity * -1,
 			this.maxVelocity
 		);
@@ -221,15 +285,22 @@ export class Character {
 
 	private turn(): void {
 		const otherPlayer = this.player === 0 ? 1 : 0;
-		const orientationTarget: coordinates = this.players[otherPlayer]?.position || { x: 0, y: 0 };
-		const angle = Math.atan2(orientationTarget.y - this.position.y, orientationTarget.x - this.position.x);
+		const orientationTarget: coordinates = this.players[otherPlayer]
+			?.position || { x: 0, y: 0 };
+		const angle = Math.atan2(
+			orientationTarget.y - this.position.y,
+			orientationTarget.x - this.position.x
+		);
 		this.orientation = angle;
 
 		const rotatedObstacle = rotate(
 			{
 				a: { x: this.position.x, y: this.position.y },
 				b: { x: this.position.x + this.size, y: this.position.y },
-				c: { x: this.position.x + this.size, y: this.position.y + this.size },
+				c: {
+					x: this.position.x + this.size,
+					y: this.position.y + this.size,
+				},
 				d: { x: this.position.x, y: this.position.y + this.size },
 			},
 			this.orientation
@@ -259,7 +330,8 @@ export class Character {
 
 	private strike(): void {
 		const otherPlayerId = this.player === 0 ? 1 : 0;
-		const otherPlayer: rectangle = this.players[otherPlayerId].obstacle?.getObject();
+		const otherPlayer: rectangle =
+			this.players[otherPlayerId].obstacle?.getObject();
 
 		const blocked = this.players[otherPlayerId].action.blocking;
 		if (blocked) {
@@ -276,8 +348,14 @@ export class Character {
 		const weaponPosition = rotate(
 			{
 				a: { x: this.position.x, y: this.position.y },
-				b: { x: this.position.x + this.size + this.range, y: this.position.y },
-				c: { x: this.position.x + this.size + this.range, y: this.position.y + this.size },
+				b: {
+					x: this.position.x + this.size + this.range,
+					y: this.position.y,
+				},
+				c: {
+					x: this.position.x + this.size + this.range,
+					y: this.position.y + this.size,
+				},
 				d: { x: this.position.x, y: this.position.y + this.size },
 			},
 			this.orientation,
@@ -291,14 +369,17 @@ export class Character {
 			new Vector(weaponPosition.d.x, weaponPosition.d.y),
 		]);
 
-		const hit = this.collider.testPolygonPolygon(weaponPolygon, otherPlayerPolygon) as boolean;
+		const hit = this.collider.testPolygonPolygon(
+			weaponPolygon,
+			otherPlayerPolygon
+		) as boolean;
 		if (hit) {
 			this.finish();
 		}
 	}
 
 	private finish(): void {
-		const finish: FinishEvent = new CustomEvent('countdown', {
+		const finish: FinishEvent = new CustomEvent("countdown", {
 			detail: {
 				winner: this.player,
 			},
@@ -335,7 +416,10 @@ export class Character {
 
 	private draw(): void {
 		this.ctx.save();
-		this.ctx.translate(this.position.x + this.size / 2, this.position.y + this.size / 2);
+		this.ctx.translate(
+			this.position.x + this.size / 2,
+			this.position.y + this.size / 2
+		);
 
 		this.ctx.rotate(this.orientation);
 
@@ -346,21 +430,31 @@ export class Character {
 		this.ctx.fillRect(this.size / -2, this.size / -2, this.size, this.size);
 
 		// face
-		this.ctx.shadowColor = '#ff00ff';
+		this.ctx.shadowColor = "#ff00ff";
 		this.ctx.shadowBlur = 8;
-		this.ctx.fillStyle = '#ff00ff';
+		this.ctx.fillStyle = "#ff00ff";
 		this.ctx.fillRect(this.size / 2 - 20, this.size / -2, 20, this.size);
 
 		// weapon
 		if (this.action.attacking && this.active) {
 			this.ctx.fillStyle = config.theme.weapon;
-			this.ctx.fillRect(this.size / 2, this.size / -2, this.range, this.size);
+			this.ctx.fillRect(
+				this.size / 2,
+				this.size / -2,
+				this.range,
+				this.size
+			);
 		}
 
 		// shield
 		if (this.action.blocking && this.active) {
 			this.ctx.fillStyle = config.theme.shield;
-			this.ctx.fillRect(this.size / 2 + 20, this.size / -2, 20, this.size);
+			this.ctx.fillRect(
+				this.size / 2 + 20,
+				this.size / -2,
+				20,
+				this.size
+			);
 		}
 
 		this.ctx.restore();

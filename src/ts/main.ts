@@ -1,10 +1,11 @@
-import { Countdown } from './countdown';
-import { Obstacle } from './obstacle';
-import { Character } from './character';
-import { Scene } from './scene';
-import { Renderer } from './render';
-import { Collider2d } from 'collider2d';
-import { Gui } from './gui';
+import { Countdown } from "./countdown";
+import { Obstacle } from "./obstacle";
+import { Character } from "./character";
+import { Scene } from "./scene";
+import { Renderer } from "./render";
+import { Collider2d } from "collider2d";
+import { Gui } from "./gui";
+import { GamepadAdapter } from "./gamepadAdapter";
 
 export class Game {
 	ctx: CanvasRenderingContext2D;
@@ -12,13 +13,14 @@ export class Game {
 	obstacles: Obstacle[];
 	scene: Scene;
 	players: Character[];
+	gamepadAdapter: GamepadAdapter;
 	countdown: Countdown;
 	gui: Gui;
 	renderer: Renderer;
 
 	constructor() {
-		const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-		this.ctx = canvas.getContext('2d');
+		const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+		this.ctx = canvas.getContext("2d");
 		this.collider = new Collider2d();
 		this.obstacles = [];
 		this.scene = new Scene(this.ctx);
@@ -27,6 +29,8 @@ export class Game {
 		const player1 = new Character(this, 0);
 		const player2 = new Character(this, 1);
 		this.players.push(player1, player2);
+
+		this.gamepadAdapter = new GamepadAdapter(this.ctx);
 
 		this.countdown = new Countdown(this.ctx);
 		this.gui = new Gui(this.ctx, 2);
@@ -38,8 +42,8 @@ export class Game {
 	}
 
 	manageState() {
-		this.ctx.canvas.addEventListener('countdown', ((e: FinishEvent) => {
-			if (typeof e.detail?.winner === 'number') {
+		this.ctx.canvas.addEventListener("countdown", ((e: FinishEvent) => {
+			if (typeof e.detail?.winner === "number") {
 				this.gui.incrementScore(e.detail.winner);
 			}
 
@@ -47,7 +51,7 @@ export class Game {
 			this.togglePlayers(false);
 		}) as EventListener);
 
-		this.ctx.canvas.addEventListener('play', () => {
+		this.ctx.canvas.addEventListener("play", () => {
 			this.togglePlayers(true);
 		});
 	}
@@ -63,7 +67,7 @@ export class Game {
 	}
 
 	start() {
-		const startEvent: FinishEvent = new Event('countdown');
+		const startEvent: FinishEvent = new Event("countdown");
 		this.ctx.canvas.dispatchEvent(startEvent);
 	}
 }

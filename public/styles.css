@@ -1,6 +1,6 @@
 @font-face {
-	font-family: 'PressStart2P';
-	src: url(./assets/PressStart2P.woff2) format('woff2');
+	font-family: "PressStart2P";
+	src: url(./assets/PressStart2P.woff2) format("woff2");
 }
 
 :root {
@@ -18,7 +18,7 @@ body {
 :is(h1, h2, h3, h4, h5, h6) {
 	color: var(--accent-color);
 	text-align: center;
-	font-family: 'PressStart2P';
+	font-family: "PressStart2P";
 }
 
 :is(h1) {
