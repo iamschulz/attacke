@@ -5,8 +5,15 @@
 
 :root {
 	--background-color: #282b38;
+	--dark-color: #0c071c;
 	--font-color: #ffffff;
 	--accent-color: #ff4d4d;
+	--color-p1: #58dbfc;
+	--color-p2: #fce958;
+}
+
+* {
+	box-sizing: border-box;
 }
 
 body {
@@ -30,6 +37,10 @@ body {
 	color: var(--accent-color);
 }
 
+[hidden] {
+	display: none !important;
+}
+
 #canvas {
 	display: flex;
 	flex-direction: column;
@@ -41,4 +52,74 @@ body {
 	aspect-ratio: 16/9;
 	margin: auto;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	margin-bottom: 10rem;
+}
+
+.controls {
+	display: flex;
+	gap: 5rem;
+	justify-content: center;
+	margin-bottom: 10rem;
+}
+
+.controls__cursor,
+.controls__attack,
+.controls__block {
+	list-style: none;
+	display: inline-grid;
+	gap: 0.1rem;
+	padding: 0;
+	font-size: 1.5rem;
+	margin-right: 1rem;
+	vertical-align: middle;
+}
+
+.controls__attack,
+.controls__block {
+	grid-template-columns: auto auto;
+}
+
+.controls__cursor {
+	grid-template-columns: auto auto auto;
+	grid-template-rows: auto auto;
+}
+
+.controls__cursor li:first-of-type {
+	grid-column-start: 1;
+	grid-column-end: 4;
+	display: flex;
+	justify-content: center;
+}
+
+.controls__group svg {
+	width: 7rem;
+	aspect-ratio: 1.1/1;
+	vertical-align: middle;
+	color: var(--dark-color);
+}
+
+.controls__group.move svg {
+	--gamepad-move: var(--accent-color);
+}
+
+.controls__group.attack svg {
+	--gamepad-attack: var(--accent-color);
+}
+
+.controls__group.block svg {
+	--gamepad-block: var(--accent-color);
+}
+
+:is(kbd) {
+	background: var(--dark-color);
+	padding: 0.5rem;
+	display: inline-block;
+}
+
+.color-p1 {
+	color: var(--color-p1);
+}
+
+.color-p2 {
+	color: var(--color-p2);
 }

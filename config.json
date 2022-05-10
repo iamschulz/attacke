@@ -13,8 +13,8 @@
 			"right": ["ArrowRight"],
 			"up": ["ArrowUp"],
 			"down": ["ArrowDown"],
-			"attack": ["KeyO"],
-			"block": ["KeyP"]
+			"attack": ["KeyP"],
+			"block": ["KeyO"]
 		}
 	],
 	"gamepad": {
