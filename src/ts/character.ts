@@ -98,11 +98,13 @@ export class Character {
 		// move left
 		config.controls[this.player].left.forEach((key: string) => {
 			document.addEventListener("keydown", (event: KeyboardEvent) => {
+				this.captureEvent(event);
 				if (event.code === key && event.repeat === false) {
 					this.action.movingX = -1;
 				}
 			});
 			document.addEventListener("keyup", (event: KeyboardEvent) => {
+				this.captureEvent(event);
 				if (event.code === key) {
 					this.action.movingX = 0;
 				}
@@ -112,11 +114,13 @@ export class Character {
 		// move right
 		config.controls[this.player].right.forEach((key: string) => {
 			document.addEventListener("keydown", (event: KeyboardEvent) => {
+				this.captureEvent(event);
 				if (event.code === key && event.repeat === false) {
 					this.action.movingX = 1;
 				}
 			});
 			document.addEventListener("keyup", (event: KeyboardEvent) => {
+				this.captureEvent(event);
 				if (event.code === key) {
 					this.action.movingX = 0;
 				}
@@ -126,11 +130,13 @@ export class Character {
 		// move up
 		config.controls[this.player].up.forEach((key: string) => {
 			document.addEventListener("keydown", (event: KeyboardEvent) => {
+				this.captureEvent(event);
 				if (event.code === key && event.repeat === false) {
 					this.action.movingY = -1;
 				}
 			});
 			document.addEventListener("keyup", (event: KeyboardEvent) => {
+				this.captureEvent(event);
 				if (event.code === key) {
 					this.action.movingY = 0;
 				}
@@ -140,11 +146,13 @@ export class Character {
 		// move down
 		config.controls[this.player].down.forEach((key: string) => {
 			document.addEventListener("keydown", (event: KeyboardEvent) => {
+				this.captureEvent(event);
 				if (event.code === key && event.repeat === false) {
 					this.action.movingY = 1;
 				}
 			});
 			document.addEventListener("keyup", (event: KeyboardEvent) => {
+				this.captureEvent(event);
 				if (event.code === key) {
 					this.action.movingY = 0;
 				}
@@ -218,6 +226,17 @@ export class Character {
 				}
 			);
 		});
+	}
+
+	captureEvent(event: KeyboardEvent): void {
+		if (
+			event.target === this.ctx.canvas &&
+			config.controls.find((x) =>
+				Object.values(x).some((y) => y.includes(event.code))
+			)
+		) {
+			event.preventDefault();
+		}
 	}
 
 	public setActive(active: boolean): void {
