@@ -30,36 +30,34 @@ export class GamepadAdapter {
 	}
 
 	pollGamepads() {
-		// todo: only works chrome yet
 		const gamepads = navigator.getGamepads();
-		console.log(gamepads);
 		for (var i = 0; i < gamepads.length; i++) {
-			// todo: check for playstation and switch controllers
-			if (!gamepads[i]?.id.includes("Xbox")) {
-				this.saveGamepadsState();
-				continue;
-			}
-
 			const gp = gamepads[i];
-			if (gp && gp.buttons) {
+			if (gp && gp.buttons && this.gamepads[i]?.buttons) {
 				const axes = gp.axes;
 				this.moveStick(i, 0, { x: axes[0], y: axes[1] });
 				this.moveStick(i, 1, { x: axes[2], y: axes[3] });
 
-				const buttons = gp.buttons
-					.map((b, j) => ({
-						index: j,
-						button: b,
-					}))
-					.filter((b) => b.button.pressed);
+				const buttons = gp.buttons.map((b, j) => ({
+					index: j,
+					button: b,
+				}));
 				if (buttons.length > 0) {
 					buttons.forEach((b) => {
 						if (
 							this.gamepads[i]?.buttons &&
 							b.button.value !==
-								this.gamepads[i]?.buttons[b.index]?.value
+								this.gamepads[i]?.buttons[b.index]?.value &&
+							b.button.pressed
 						) {
 							this.pressButton(i, b.index, b.button);
+						} else if (
+							this.gamepads[i]?.buttons &&
+							b.button.value !==
+								this.gamepads[i]?.buttons[b.index]?.value &&
+							!b.button.pressed
+						) {
+							this.releaseButton(i, b.index, b.button);
 						}
 					});
 				}
@@ -70,7 +68,8 @@ export class GamepadAdapter {
 	}
 
 	pressButton(gamepad: number, buttonIndex: number, button: GamepadButton) {
-		this.gamepads[gamepad].buttons[buttonIndex] = button;
+		this.gamepads[gamepad].buttons[buttonIndex].value = button.value;
+		this.gamepads[gamepad].buttons[buttonIndex].pressed = button.pressed;
 		const GamepadButtonDown: GamepadButtonEvent = new CustomEvent(
 			"gamepadButtonDown",
 			{
@@ -82,6 +81,22 @@ export class GamepadAdapter {
 			}
 		);
 		document.dispatchEvent(GamepadButtonDown);
+	}
+
+	releaseButton(gamepad: number, buttonIndex: number, button: GamepadButton) {
+		this.gamepads[gamepad].buttons[buttonIndex].value = button.value;
+		this.gamepads[gamepad].buttons[buttonIndex].pressed = button.pressed;
+		const GamepadButtonUp: GamepadButtonEvent = new CustomEvent(
+			"gamepadButtonUp",
+			{
+				detail: {
+					gamepadId: gamepad,
+					buttonIndex: buttonIndex,
+					button: button,
+				},
+			}
+		);
+		document.dispatchEvent(GamepadButtonUp);
 	}
 
 	moveStick(gamepad: number, stickIndex: number, stick: coordinates) {

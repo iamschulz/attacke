@@ -5,16 +5,16 @@
 			"right": ["KeyD"],
 			"up": ["KeyW"],
 			"down": ["KeyS"],
-			"attack": ["KeyC"],
-			"block": ["ShiftLeft"]
+			"attack": ["KeyR"],
+			"block": ["KeyT"]
 		},
 		{
 			"left": ["ArrowLeft"],
 			"right": ["ArrowRight"],
 			"up": ["ArrowUp"],
 			"down": ["ArrowDown"],
-			"attack": ["Space"],
-			"block": ["ShiftRight"]
+			"attack": ["KeyO"],
+			"block": ["KeyP"]
 		}
 	],
 	"gamepad": {
