@@ -47,7 +47,7 @@ export class Game {
 				this.gui.incrementScore(e.detail.winner);
 			}
 
-			this.startCountdown();
+			this.startCountdown(e.detail?.winner);
 			this.togglePlayers(false);
 		}) as EventListener);
 
@@ -56,8 +56,8 @@ export class Game {
 		});
 	}
 
-	startCountdown() {
-		this.countdown.startTimer();
+	startCountdown(winner?: number) {
+		this.countdown.startTimer(winner);
 	}
 
 	togglePlayers(active: boolean) {
