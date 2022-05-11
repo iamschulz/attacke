@@ -249,11 +249,14 @@ export class Character {
 			(obstacle) => obstacle.getId() !== this.obstacle.getId()
 		);
 		obstacles.forEach((obstacle) => {
-			if (this.obstacle.collidesWith(obstacle)) {
-				this.velocity.x *= -1;
-				this.velocity.y *= -1;
-				// todo: needs refinement, players can become stuck
+			const collision = this.obstacle.collidesWith(obstacle);
+
+			if (!collision) {
+				return;
 			}
+
+			this.velocity.x = this.velocity.x + collision.overlapV.x * -1;
+			this.velocity.y = this.velocity.y + collision.overlapV.y * -1;
 		});
 	}
 
@@ -481,9 +484,9 @@ export class Character {
 
 	private onNextTick(): void {
 		if (this.active) {
-			this.collide();
 			this.move();
 			this.turn();
+			this.collide();
 			this.attack();
 			this.block();
 		}

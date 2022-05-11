@@ -1,5 +1,5 @@
-import { Vector, Polygon, Collider2d } from 'collider2d';
-import CollisionDetails from 'collider2d/build/collision_details';
+import { Vector, Polygon, Collider2d } from "collider2d";
+import CollisionDetails from "collider2d/build/collision_details";
 
 export class Obstacle {
 	private collider: Collider2d;
@@ -7,7 +7,12 @@ export class Obstacle {
 	private id: string;
 	private object: rectangle;
 
-	constructor(collider: Collider2d, obstacles: Obstacle[], id: string, object: rectangle) {
+	constructor(
+		collider: Collider2d,
+		obstacles: Obstacle[],
+		id: string,
+		object: rectangle
+	) {
 		this.collider = collider;
 		this.obstacles = obstacles;
 		this.id = id;
@@ -29,7 +34,9 @@ export class Obstacle {
 	}
 
 	public removeObstacle() {
-		this.obstacles = this.obstacles.filter((obstacle) => obstacle.id !== this.id);
+		this.obstacles = this.obstacles.filter(
+			(obstacle) => obstacle.id !== this.id
+		);
 	}
 
 	public collidesWith(obstacle: Obstacle): CollisionDetails {
@@ -47,6 +54,10 @@ export class Obstacle {
 			new Vector(obstacle.object.d.x, obstacle.object.d.y),
 		]);
 
-		return this.collider.testPolygonPolygon(thisPolygon, otherPolygon) as CollisionDetails;
+		return this.collider.testPolygonPolygon(
+			thisPolygon,
+			otherPolygon,
+			true
+		) as CollisionDetails;
 	}
 }
