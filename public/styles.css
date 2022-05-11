@@ -28,11 +28,11 @@ body {
 	color: var(--accent-color);
 	text-align: center;
 	font-family: var(--font-accent);
+	text-shadow: 0 0 0.8rem rgba(0, 0, 0, 0.5);
 }
 
 :is(h1) {
 	text-transform: uppercase;
-	text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 :is(a) {
@@ -62,10 +62,17 @@ body {
 }
 
 .controls {
-	display: flex;
-	gap: 5rem;
-	justify-content: center;
 	margin-bottom: 10rem;
+	text-align: center;
+}
+
+.controls__group {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.controls__group:not(:last-of-type) {
+	margin-right: 5rem;
 }
 
 .controls__cursor,
@@ -99,6 +106,7 @@ body {
 
 .controls__group p {
 	font-size: 1.5rem;
+	margin: 3rem 0 0 0;
 }
 
 .controls__group svg {
@@ -123,7 +131,10 @@ body {
 :is(kbd) {
 	background: var(--dark-color);
 	padding: 0.5rem;
-	display: inline-block;
+	display: inline-grid;
+	height: 2.8rem;
+	width: 2.8rem;
+	place-items: center;
 }
 
 .color-p1 {
