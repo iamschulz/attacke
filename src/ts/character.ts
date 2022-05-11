@@ -228,7 +228,7 @@ export class Character {
 		});
 	}
 
-	captureEvent(event: KeyboardEvent): void {
+	private captureEvent(event: KeyboardEvent): void {
 		if (
 			event.target === this.ctx.canvas &&
 			config.controls.find((x) =>

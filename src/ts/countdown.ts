@@ -13,7 +13,7 @@ export class Countdown {
 	constructor(ctx: CanvasRenderingContext2D) {
 		this.ctx = ctx;
 		this.interval = 0;
-		this.intervalLength = 1000;
+		this.intervalLength = 650;
 		this.intervalCount = 3;
 		this.count = 0;
 		this.flashColor = "#ff4d4d";

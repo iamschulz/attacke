@@ -6,10 +6,12 @@
 :root {
 	--background-color: #282b38;
 	--dark-color: #0c071c;
-	--font-color: #ffffff;
+	--font-color: #9b9fa8;
 	--accent-color: #ff4d4d;
 	--color-p1: #58dbfc;
 	--color-p2: #fce958;
+	--font-base: monospace;
+	--font-accent: "PressStart2P";
 }
 
 * {
@@ -17,7 +19,7 @@
 }
 
 body {
-	font-family: sans-serif;
+	font-family: var(--font-base);
 	background-color: var(--background-color);
 	color: var(--font-color);
 }
@@ -25,7 +27,7 @@ body {
 :is(h1, h2, h3, h4, h5, h6) {
 	color: var(--accent-color);
 	text-align: center;
-	font-family: "PressStart2P";
+	font-family: var(--font-accent);
 }
 
 :is(h1) {
@@ -93,6 +95,10 @@ body {
 	grid-column-end: 4;
 	display: flex;
 	justify-content: center;
+}
+
+.controls__group p {
+	font-size: 1.5rem;
 }
 
 .controls__group svg {
