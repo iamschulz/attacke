@@ -4,12 +4,13 @@
 }
 
 :root {
-	--background-color: #282b38;
-	--dark-color: #0c071c;
-	--font-color: #9b9fa8;
-	--accent-color: #ff4d4d;
-	--color-p1: #58dbfc;
-	--color-p2: #fce958;
+	--background-color: rgb(40, 43, 56);
+	--dark-color: rgb(12, 7, 28);
+	--font-color: rgb(155, 159, 168);
+	--accent-color: rgb(255, 77, 77);
+	--accent-shadow-color: rgba(255, 77, 77, 0.5);
+	--color-p1: rgb(88, 219, 252);
+	--color-p2: rgb(252, 233, 88);
 	--font-base: monospace;
 	--font-accent: "PressStart2P";
 }
@@ -28,7 +29,7 @@ body {
 	color: var(--accent-color);
 	text-align: center;
 	font-family: var(--font-accent);
-	text-shadow: 0 0 0.8rem rgba(0, 0, 0, 0.5);
+	text-shadow: 0 0 0.8rem var(--accent-shadow-color);
 }
 
 :is(h1) {

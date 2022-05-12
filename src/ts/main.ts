@@ -6,6 +6,8 @@ import { Renderer } from "./render";
 import { Collider2d } from "collider2d";
 import { Gui } from "./gui";
 import { GamepadAdapter } from "./gamepadAdapter";
+import { themes } from "../../public/themes/index";
+import { Theme } from "../../public/themes/theme";
 
 export class Game {
 	ctx: CanvasRenderingContext2D;
@@ -16,24 +18,26 @@ export class Game {
 	gamepadAdapter: GamepadAdapter;
 	countdown: Countdown;
 	gui: Gui;
+	theme: Theme;
 	renderer: Renderer;
 
 	constructor() {
 		const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 		this.ctx = canvas.getContext("2d");
 		this.collider = new Collider2d();
+		this.theme = new Theme(themes.MyNewTheme);
 		this.obstacles = [];
-		this.scene = new Scene(this.ctx);
+		this.scene = new Scene(this.ctx, this.theme);
 		this.players = [];
 
-		const player1 = new Character(this, 0);
-		const player2 = new Character(this, 1);
+		const player1 = new Character(this, 0, this.theme);
+		const player2 = new Character(this, 1, this.theme);
 		this.players.push(player1, player2);
 
 		this.gamepadAdapter = new GamepadAdapter(this.ctx);
 
-		this.countdown = new Countdown(this.ctx);
-		this.gui = new Gui(this.ctx, 2);
+		this.countdown = new Countdown(this.ctx, this.theme);
+		this.gui = new Gui(this.ctx, this.theme, 2);
 
 		this.renderer = new Renderer(this.ctx);
 

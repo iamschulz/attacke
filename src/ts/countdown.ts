@@ -1,8 +1,10 @@
 import config from "../../config.json" assert { type: "json" };
+import { Theme } from "../../public/themes/theme";
 import { hexToRGB } from "./util";
 
 export class Countdown {
 	ctx: CanvasRenderingContext2D;
+	theme: Theme;
 	interval: number;
 	intervalLength: number;
 	intervalCount: number;
@@ -10,8 +12,9 @@ export class Countdown {
 	flashColor: string;
 	flashOpacity: number;
 
-	constructor(ctx: CanvasRenderingContext2D) {
+	constructor(ctx: CanvasRenderingContext2D, theme: Theme) {
 		this.ctx = ctx;
+		this.theme = theme;
 		this.interval = 0;
 		this.intervalLength = 650;
 		this.intervalCount = 3;
@@ -27,6 +30,13 @@ export class Countdown {
 	startTimer(winner?: number) {
 		this.count = this.intervalCount;
 		this.flashOpacity = 1;
+
+		if (!this.theme.assetsLoaded) {
+			window.setTimeout(() => {
+				this.startTimer(winner);
+			}, 100);
+			return;
+		}
 
 		this.flashColor =
 			typeof winner === "number"
@@ -62,6 +72,11 @@ export class Countdown {
 		this.ctx.shadowColor = "#ff4d4d";
 		this.ctx.shadowBlur = 20;
 		this.ctx.font = `${this.ctx.canvas.height / 1.5}px PressStart2P`;
+
+		if (this.theme.config.shader) {
+			this.theme.config.shader(this.ctx);
+		}
+
 		this.ctx.textAlign = "center";
 		this.ctx.textBaseline = "middle";
 		this.ctx.fillText(

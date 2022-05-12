@@ -3,9 +3,11 @@ import { Collider2d, Polygon, Vector } from "collider2d";
 import { Game } from "./main";
 import { clamp, rotate } from "./util";
 import { Obstacle } from "./obstacle";
+import { Theme } from "../../public/themes/theme";
 
 export class Character {
 	private ctx: CanvasRenderingContext2D;
+	private theme: Theme;
 	private active: boolean;
 	private collider: Collider2d;
 	private players: Character[];
@@ -30,8 +32,9 @@ export class Character {
 		cooldown: boolean;
 	};
 
-	constructor(game: Game, player: number) {
+	constructor(game: Game, player: number, theme: Theme) {
 		this.ctx = game.ctx;
+		this.theme = theme;
 		this.active = false;
 		this.collider = game.collider;
 		this.players = game.players;
@@ -350,6 +353,25 @@ export class Character {
 		this.strike();
 	}
 
+	private getWeaponPosition(): rectangle {
+		return rotate(
+			{
+				a: { x: this.position.x, y: this.position.y },
+				b: {
+					x: this.position.x + this.size + this.range,
+					y: this.position.y,
+				},
+				c: {
+					x: this.position.x + this.size + this.range,
+					y: this.position.y + this.size,
+				},
+				d: { x: this.position.x, y: this.position.y + this.size },
+			},
+			this.orientation,
+			{ x: this.range / 2, y: 0 } // todo: this works only by chance. need to refactor!
+		);
+	}
+
 	private strike(): void {
 		const otherPlayerId = this.player === 0 ? 1 : 0;
 		const otherPlayer: rectangle =
@@ -367,23 +389,7 @@ export class Character {
 			new Vector(otherPlayer.d.x, otherPlayer.d.y),
 		]);
 
-		const weaponPosition = rotate(
-			{
-				a: { x: this.position.x, y: this.position.y },
-				b: {
-					x: this.position.x + this.size + this.range,
-					y: this.position.y,
-				},
-				c: {
-					x: this.position.x + this.size + this.range,
-					y: this.position.y + this.size,
-				},
-				d: { x: this.position.x, y: this.position.y + this.size },
-			},
-			this.orientation,
-			{ x: this.range / 2, y: 0 } // todo: this works only by chance. need to refactor!
-		);
-
+		const weaponPosition = this.getWeaponPosition();
 		const weaponPolygon = new Polygon(new Vector(0, 0), [
 			new Vector(weaponPosition.a.x, weaponPosition.a.y),
 			new Vector(weaponPosition.b.x, weaponPosition.b.y),
@@ -436,6 +442,27 @@ export class Character {
 		});
 	}
 
+	private getSprite(): string {
+		if (this.action.movingX && this.action.movingY) {
+			let y = this.velocity.y < 0 ? "n" : "s";
+			let x = this.velocity.x > 0 ? "e" : "w";
+			return this.theme.config.players[this.player].default[`${y}${x}`];
+		}
+
+		if (this.action.movingY) {
+			return this.velocity.y < 0
+				? this.theme.config.players[this.player].default.n
+				: this.theme.config.players[this.player].default.s;
+		}
+
+		if (this.action.movingX) {
+			return this.velocity.x > 0
+				? this.theme.config.players[this.player].default.e
+				: this.theme.config.players[this.player].default.w;
+		}
+		return this.theme.config.players[this.player].default.s;
+	}
+
 	private draw(): void {
 		this.ctx.save();
 		this.ctx.translate(
@@ -443,30 +470,30 @@ export class Character {
 			this.position.y + this.size / 2
 		);
 
-		this.ctx.rotate(this.orientation);
+		this.theme.config.turnSprites && this.ctx.rotate(this.orientation);
 
 		// body
+		/*
 		this.ctx.shadowColor = config.theme.player[this.player];
 		this.ctx.shadowBlur = 10;
 		this.ctx.fillStyle = config.theme.player[this.player];
 		this.ctx.fillRect(this.size / -2, this.size / -2, this.size, this.size);
 
-		// face
+        // face
 		this.ctx.shadowColor = "#ff00ff";
 		this.ctx.shadowBlur = 8;
 		this.ctx.fillStyle = "#ff00ff";
 		this.ctx.fillRect(this.size / 2 - 20, this.size / -2, 20, this.size);
+        */
 
-		// weapon
-		if (this.action.attacking && this.active) {
-			this.ctx.fillStyle = config.theme.weapon;
-			this.ctx.fillRect(
-				this.size / 2,
-				this.size / -2,
-				this.range,
-				this.size
-			);
-		}
+		// character
+		this.theme.config.shader && this.theme.config.shader(this.ctx);
+		this.theme.drawAsset(
+			this.ctx,
+			this.getSprite(),
+			{ x: this.size / -2, y: this.size / -2 },
+			{ width: this.size, height: this.size }
+		);
 
 		// shield
 		if (this.action.blocking && this.active) {
@@ -480,6 +507,20 @@ export class Character {
 		}
 
 		this.ctx.restore();
+
+		// draw weapon in absolute space
+		if (this.action.attacking && this.active) {
+			const weaponPosition = this.getWeaponPosition();
+			this.ctx.fillStyle = config.theme.weapon;
+			this.ctx.moveTo(weaponPosition.a.x, weaponPosition.a.y);
+			this.ctx.beginPath();
+			this.ctx.lineTo(weaponPosition.b.x, weaponPosition.b.y);
+			this.ctx.lineTo(weaponPosition.c.x, weaponPosition.c.y);
+			this.ctx.lineTo(weaponPosition.d.x, weaponPosition.d.y);
+			this.ctx.lineTo(weaponPosition.a.x, weaponPosition.a.y);
+			this.ctx.closePath();
+			this.ctx.fill();
+		}
 	}
 
 	private onNextTick(): void {
