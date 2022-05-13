@@ -27,7 +27,7 @@ export class Game {
 		this.collider = new Collider2d();
 		this.theme = new Theme(themes.MyNewTheme);
 		this.obstacles = [];
-		this.scene = new Scene(this.ctx, this.theme);
+		this.scene = new Scene(this, this.theme);
 		this.players = [];
 
 		const player1 = new Character(this, 0, this.theme);
