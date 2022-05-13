@@ -26,9 +26,9 @@ export class Gui {
 	draw() {
 		this.ctx.save();
 		this.score.forEach((score, player) => {
-			this.ctx.shadowColor = config.theme.player[player];
+			this.ctx.shadowColor = this.theme.config.colors[player];
 			this.ctx.shadowBlur = 8;
-			this.ctx.fillStyle = config.theme.player[player];
+			this.ctx.fillStyle = this.theme.config.colors[player];
 			this.ctx.font = `80px PressStart2P`;
 			this.ctx.textAlign = player === 0 ? "right" : "left";
 
@@ -36,11 +36,7 @@ export class Gui {
 				this.theme.config.shader(this.ctx);
 			}
 
-			this.ctx.fillText(
-				score.toString(),
-				this.ctx.canvas.width / 2 + (100 * (player === 0 ? -1 : 1)) / 2,
-				110
-			);
+			this.ctx.fillText(score.toString(), this.ctx.canvas.width / 2 + (100 * (player === 0 ? -1 : 1)) / 2, 110);
 		});
 		this.ctx.restore();
 	}

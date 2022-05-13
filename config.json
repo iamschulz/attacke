@@ -20,10 +20,5 @@
 	"gamepad": {
 		"attack": 0,
 		"block": 2
-	},
-	"theme": {
-		"player": ["#58dbfc", "#fce958"],
-		"weapon": "#ff0000",
-		"shield": "#00ff00"
 	}
 }

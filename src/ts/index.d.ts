@@ -51,6 +51,7 @@ declare type SpriteSet = {
 declare type themeConfig = {
 	name: string; // has to match folder name
 	scene: string; // link to scene image, 1920x1080
+	colors: string[];
 	obstacles: rectangle[]; // outline obsacles within the scene
 	players: {
 		default: SpriteSet; // player when standing still, 100x100

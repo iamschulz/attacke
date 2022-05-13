@@ -1,5 +1,6 @@
 export const MyNewTheme: themeConfig = {
 	name: "my-new-theme",
+	colors: ["#58dbfc", "#fce958"],
 	scene: "./assets/scene.gif",
 	obstacles: [],
 	players: [
