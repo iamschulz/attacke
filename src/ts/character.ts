@@ -163,58 +163,80 @@ export class Character {
 		});
 
 		// move by stick
-		document.addEventListener("gamepadStickMove", (event: GamepadStickEvent) => {
-			if (event.detail.gamepadId !== this.player || event.detail.stickIndex !== 0) {
-				return;
-			}
+		document.addEventListener(
+			"gamepadStickMove",
+			(event: GamepadStickEvent) => {
+				if (
+					event.detail.gamepadId !== this.player ||
+					event.detail.stickIndex !== 0
+				) {
+					return;
+				}
 
-			this.action.movingX = event.detail.stick.x;
-			this.action.movingY = event.detail.stick.y;
-		});
+				this.action.movingX = event.detail.stick.x;
+				this.action.movingY = event.detail.stick.y;
+			}
+		);
 
 		// attack
 		config.controls[this.player].attack.forEach((key: string) => {
 			document.addEventListener("keydown", (event: KeyboardEvent) => {
-				if (event.code === key && event.repeat === false && !this.action.cooldown) {
-					this.action.attacking = true;
-				}
-			});
-
-			document.addEventListener("gamepadButtonDown", (event: GamepadButtonEvent) => {
 				if (
-					event.detail.gamepadId === this.player &&
-					event.detail.buttonIndex === config.gamepad.attack &&
+					event.code === key &&
+					event.repeat === false &&
 					!this.action.cooldown
 				) {
 					this.action.attacking = true;
 				}
 			});
+
+			document.addEventListener(
+				"gamepadButtonDown",
+				(event: GamepadButtonEvent) => {
+					if (
+						event.detail.gamepadId === this.player &&
+						event.detail.buttonIndex === config.gamepad.attack &&
+						!this.action.cooldown
+					) {
+						this.action.attacking = true;
+					}
+				}
+			);
 		});
 
 		// block
 		config.controls[this.player].block.forEach((key: string) => {
 			document.addEventListener("keydown", (event: KeyboardEvent) => {
-				if (event.code === key && event.repeat === false && !this.action.cooldown) {
-					this.action.blocking = true;
-				}
-			});
-
-			document.addEventListener("gamepadButtonDown", (event: GamepadButtonEvent) => {
 				if (
-					event.detail.gamepadId === this.player &&
-					event.detail.buttonIndex === config.gamepad.block &&
+					event.code === key &&
+					event.repeat === false &&
 					!this.action.cooldown
 				) {
 					this.action.blocking = true;
 				}
 			});
+
+			document.addEventListener(
+				"gamepadButtonDown",
+				(event: GamepadButtonEvent) => {
+					if (
+						event.detail.gamepadId === this.player &&
+						event.detail.buttonIndex === config.gamepad.block &&
+						!this.action.cooldown
+					) {
+						this.action.blocking = true;
+					}
+				}
+			);
 		});
 	}
 
 	private captureEvent(event: KeyboardEvent): void {
 		if (
 			event.target === this.ctx.canvas &&
-			config.controls.find((x) => Object.values(x).some((y) => y.includes(event.code)))
+			config.controls.find((x) =>
+				Object.values(x).some((y) => y.includes(event.code))
+			)
 		) {
 			event.preventDefault();
 		}
@@ -226,7 +248,9 @@ export class Character {
 	}
 
 	private collide(): void {
-		const obstacles = this.obstacles.filter((obstacle) => obstacle.getId() !== this.obstacle.getId());
+		const obstacles = this.obstacles.filter(
+			(obstacle) => obstacle.getId() !== this.obstacle.getId()
+		);
 		obstacles.forEach((obstacle) => {
 			const collision = this.obstacle.collidesWith(obstacle);
 
@@ -241,8 +265,10 @@ export class Character {
 
 	private move(): void {
 		const { position, velocity, action } = this;
-		const newX = position.x + action.movingX * this.speed + velocity.x * this.speed;
-		const newY = position.y + action.movingY * this.speed + velocity.y * this.speed;
+		const newX =
+			position.x + action.movingX * this.speed + velocity.x * this.speed;
+		const newY =
+			position.y + action.movingY * this.speed + velocity.y * this.speed;
 
 		position.x = newX;
 		position.y = newY;
@@ -267,12 +293,16 @@ export class Character {
 		});
 
 		this.velocity.x = clamp(
-			(action.movingX ? this.velocity.x + action.movingX : this.velocity.x * 0.8) * this.speed,
+			(action.movingX
+				? this.velocity.x + action.movingX
+				: this.velocity.x * 0.8) * this.speed,
 			this.maxVelocity * -1,
 			this.maxVelocity
 		);
 		this.velocity.y = clamp(
-			(action.movingY ? this.velocity.y + action.movingY : this.velocity.y * 0.8) * this.speed,
+			(action.movingY
+				? this.velocity.y + action.movingY
+				: this.velocity.y * 0.8) * this.speed,
 			this.maxVelocity * -1,
 			this.maxVelocity
 		);
@@ -280,8 +310,12 @@ export class Character {
 
 	private turn(): void {
 		const otherPlayer = this.player === 0 ? 1 : 0;
-		const orientationTarget: coordinates = this.players[otherPlayer]?.position || { x: 0, y: 0 };
-		const angle = Math.atan2(orientationTarget.y - this.position.y, orientationTarget.x - this.position.x);
+		const orientationTarget: coordinates = this.players[otherPlayer]
+			?.position || { x: 0, y: 0 };
+		const angle = Math.atan2(
+			orientationTarget.y - this.position.y,
+			orientationTarget.x - this.position.x
+		);
 		this.orientation = angle;
 
 		const rotatedObstacle = rotate(
@@ -340,7 +374,8 @@ export class Character {
 
 	private strike(): void {
 		const otherPlayerId = this.player === 0 ? 1 : 0;
-		const otherPlayer: rectangle = this.players[otherPlayerId].obstacle?.getObject();
+		const otherPlayer: rectangle =
+			this.players[otherPlayerId].obstacle?.getObject();
 
 		const blocked = this.players[otherPlayerId].action.blocking;
 		if (blocked) {
@@ -362,7 +397,10 @@ export class Character {
 			new Vector(weaponPosition.d.x, weaponPosition.d.y),
 		]);
 
-		const hit = this.collider.testPolygonPolygon(weaponPolygon, otherPlayerPolygon) as boolean;
+		const hit = this.collider.testPolygonPolygon(
+			weaponPolygon,
+			otherPlayerPolygon
+		) as boolean;
 		if (hit) {
 			this.finish();
 		}
@@ -405,20 +443,26 @@ export class Character {
 	}
 
 	private getSprite(): string {
-		const directions = ["w", "nw", "n", "ne", "e", "se", "s", "sw"];
-		const zones = directions.map((zone, i) => ({
-			zone,
-			start: ((Math.PI / directions.length) * i - Math.PI / 2) * 2,
-			end: ((Math.PI / directions.length) * (i + 1) - Math.PI / 2) * 2,
+		const directions = ["w", "nw", "n", "ne", "e", "se", "s", "sw", "w"];
+		const zones = directions.map((z, i) => ({
+			zone: z,
+			start: Math.PI * -1 - Math.PI / 8 + (i * Math.PI) / 4,
+			end: Math.PI * -1 - Math.PI / 8 + ((i + 1) * Math.PI) / 4,
 		}));
 
-		const direction = zones.find((zone) => this.orientation >= zone.start && this.orientation < zone.end);
+		const direction = zones.find(
+			(zone) =>
+				this.orientation >= zone.start && this.orientation < zone.end
+		);
 		return this.theme.config.players[this.player].default[direction.zone];
 	}
 
 	private draw(): void {
 		this.ctx.save();
-		this.ctx.translate(this.position.x + this.size / 2, this.position.y + this.size / 2);
+		this.ctx.translate(
+			this.position.x + this.size / 2,
+			this.position.y + this.size / 2
+		);
 
 		this.theme.config.turnSprites && this.ctx.rotate(this.orientation);
 
@@ -448,7 +492,12 @@ export class Character {
 		// shield
 		if (this.action.blocking && this.active) {
 			this.ctx.fillStyle = "#00ff00";
-			this.ctx.fillRect(this.size / 2 + 20, this.size / -2, 20, this.size);
+			this.ctx.fillRect(
+				this.size / 2 + 20,
+				this.size / -2,
+				20,
+				this.size
+			);
 		}
 
 		this.ctx.restore();
