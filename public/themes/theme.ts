@@ -1,57 +1,93 @@
 export class Theme {
 	public config: themeConfig;
-	public assetsLoaded: boolean;
-	private assets: HTMLImageElement[] = [];
+	public assetsLoaded: boolean = false;
+	private images: HTMLImageElement[] = [];
+	private sprites: Sprite[] = [];
 
 	constructor(config: themeConfig) {
 		this.config = config;
-		this.assetsLoaded = false;
 
 		this.assignGlobalColors();
 		this.loadAssets();
 	}
 
-	private getAssetUrl(asset: string): string {
-		return `./themes/${this.config.name}/${asset}`;
+	private loadImage(src: string): Promise<HTMLImageElement> {
+		const url = `./themes/${this.config.name}/${src}`;
+		return fetch(url).then(() => {
+			const img = new Image();
+			img.src = url;
+			if (!this.images.includes(img)) {
+				this.images.push(img);
+			}
+			return img;
+		});
 	}
 
 	public assignGlobalColors() {
-		document.documentElement.style.setProperty("--color-p1", this.config.colors[0]);
-		document.documentElement.style.setProperty("--color-p2", this.config.colors[1]);
+		document.documentElement.style.setProperty(
+			"--color-p1",
+			this.config.colors[0]
+		);
+		document.documentElement.style.setProperty(
+			"--color-p2",
+			this.config.colors[1]
+		);
 	}
 
 	public loadAssets() {
-		const toLoad: string[] = [];
-		toLoad.push(this.config.scene);
+		const toLoad: HTMLImageElement[] = [];
+
+		this.config.scene.images.forEach(async (image) => {
+			const imageResp = await this.loadImage(image);
+			if (toLoad.includes(imageResp)) {
+				return;
+			}
+			toLoad.push(imageResp);
+		});
+		this.sprites.push(this.config.scene);
+
 		this.config.players.forEach((player) => {
 			const spriteSets = ["default", "move", "attack", "block"];
 			spriteSets.forEach((spriteSet) => {
-				Object.keys(player[spriteSet]).forEach((key) => {
-					if (toLoad.includes(player[spriteSet][key])) {
-						return;
-					}
-					toLoad.push(player[spriteSet][key]);
+				Object.keys(player[spriteSet]).forEach((key: string) => {
+					player[spriteSet][key].images.forEach(
+						async (image: string) => {
+							const imageResp = await this.loadImage(image);
+							if (toLoad.includes(imageResp)) {
+								return;
+							}
+							toLoad.push(imageResp);
+						}
+					);
+					this.sprites.push(player[spriteSet][key]);
 				});
 			});
 		});
 
-		// load assets
-		let loaded = 0;
-		toLoad.forEach((asset) => {
-			const img = new Image();
-			img.src = this.getAssetUrl(asset);
-			img.addEventListener("load", () => {
-				this.assets.push(img);
-				loaded++;
-				if (loaded === this.assets.length) {
-					this.assetsLoaded = true;
-				}
-			});
+		this.assetsLoaded = true;
+	}
+
+	public updateFrames() {
+		this.sprites.forEach((sprite) => {
+			sprite.current = (sprite.current + 1) % sprite.images.length;
 		});
 	}
 
-	public drawAsset(ctx: CanvasRenderingContext2D, asset: string, pos: coordinates, dims: dimensions) {
-		const img = this.assets.find((x) => x.src.endsWith(asset.replace("./assets", "/assets")));
+	public drawSprite(
+		ctx: CanvasRenderingContext2D,
+		name: string,
+		pos: coordinates,
+		dims: dimensions
+	) {
+		const sprite = this.sprites.find((x) => x.name === name);
+		if (!sprite) {
+			return;
+		}
+
+		const img = this.images.find((x) =>
+			x.src.endsWith(`${sprite.images[sprite.current].replace("./", "")}`)
+		);
+
 		if (!img) {
 			return;
 		}

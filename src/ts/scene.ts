@@ -30,9 +30,9 @@ export class Scene {
 	}
 
 	private draw() {
-		this.theme.drawAsset(
+		this.theme.drawSprite(
 			this.ctx,
-			this.theme.config.scene,
+			this.theme.config.scene.name,
 			{ x: 0, y: 0 },
 			{ width: this.width, height: this.height }
 		);

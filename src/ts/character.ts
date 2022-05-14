@@ -442,7 +442,7 @@ export class Character {
 		});
 	}
 
-	private getSprite(): string {
+	private getSprite(): Sprite {
 		const directions = ["w", "nw", "n", "ne", "e", "se", "s", "sw", "w"];
 		const zones = directions.map((z, i) => ({
 			zone: z,
@@ -482,9 +482,9 @@ export class Character {
 
 		// character
 		this.theme.config.shader && this.theme.config.shader(this.ctx);
-		this.theme.drawAsset(
+		this.theme.drawSprite(
 			this.ctx,
-			this.getSprite(),
+			this.getSprite().name,
 			{ x: this.size / -2, y: this.size / -2 },
 			{ width: this.size, height: this.size }
 		);

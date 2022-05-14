@@ -39,7 +39,7 @@ export class Game {
 		this.countdown = new Countdown(this.ctx, this.theme);
 		this.gui = new Gui(this.ctx, this.theme, 2);
 
-		this.renderer = new Renderer(this.ctx);
+		this.renderer = new Renderer(this.ctx, this.theme);
 
 		this.manageState();
 		this.start();

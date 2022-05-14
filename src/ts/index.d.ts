@@ -37,22 +37,29 @@ declare interface GamepadStickEvent extends Event {
 	};
 }
 
+declare type Sprite = {
+	name: string;
+	images: string[];
+	current: number;
+};
+
 declare type SpriteSet = {
-	n: string; // sprite facing north
-	ne: string; // sprite facing north-east
-	e: string; // etc
-	se: string;
-	s: string;
-	sw: string;
-	w: string;
-	nw: string;
+	n: Sprite; // sprite facing north
+	ne: Sprite; // sprite facing north-east
+	e: Sprite; // etc
+	se: Sprite;
+	s: Sprite;
+	sw: Sprite;
+	w: Sprite;
+	nw: Sprite;
 };
 
 declare type themeConfig = {
 	name: string; // has to match folder name
-	scene: string; // link to scene image, 1920x1080
+	scene: Sprite; // scene image, 1920x1080
 	colors: string[];
 	obstacles: rectangle[]; // outline obsacles within the scene
+	animationSpeed: number; // change image every N frames
 	players: {
 		default: SpriteSet; // player when standing still, 100x100
 		move: SpriteSet; // player when moving, 100x100

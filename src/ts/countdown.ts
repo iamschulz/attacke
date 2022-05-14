@@ -38,7 +38,10 @@ export class Countdown {
 			return;
 		}
 
-		this.flashColor = typeof winner === "number" ? this.theme.config.colors[winner] || "#ff4d4d" : "#ff4d4d";
+		this.flashColor =
+			typeof winner === "number"
+				? this.theme.config.colors[winner] || "#ff4d4d"
+				: "#ff4d4d";
 
 		this.interval = window.setInterval(() => {
 			if (this.count > 1) {
@@ -76,7 +79,11 @@ export class Countdown {
 
 		this.ctx.textAlign = "center";
 		this.ctx.textBaseline = "middle";
-		this.ctx.fillText(this.count.toString(), this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 100);
+		this.ctx.fillText(
+			this.count.toString(),
+			this.ctx.canvas.width / 2,
+			this.ctx.canvas.height / 2 + 100
+		);
 		this.ctx.restore();
 
 		this.flashOpacity = Math.max(this.flashOpacity - 0.01, 0);
