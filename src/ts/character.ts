@@ -69,8 +69,8 @@ export class Character {
 			this.turn();
 		});
 
-		this.ctx.canvas.addEventListener("tick", () => {
-			this.onNextTick();
+		this.ctx.canvas.addEventListener("tick", (event: TickEvent) => {
+			this.onNextTick(event.detail.frameCount || 0);
 		});
 	}
 
@@ -457,7 +457,7 @@ export class Character {
 		return this.theme.config.players[this.player].default[direction.zone];
 	}
 
-	private draw(): void {
+	private draw(frameCount: number): void {
 		this.ctx.save();
 		this.ctx.translate(
 			this.position.x + this.size / 2,
@@ -486,7 +486,8 @@ export class Character {
 			this.ctx,
 			this.getSprite().name,
 			{ x: this.size / -2, y: this.size / -2 },
-			{ width: this.size, height: this.size }
+			{ width: this.size, height: this.size },
+			frameCount
 		);
 
 		// shield
@@ -517,7 +518,7 @@ export class Character {
 		}
 	}
 
-	private onNextTick(): void {
+	private onNextTick(frameCount: number): void {
 		if (this.active) {
 			this.move();
 			this.turn();
@@ -525,6 +526,6 @@ export class Character {
 			this.attack();
 			this.block();
 		}
-		this.draw();
+		this.draw(frameCount);
 	}
 }

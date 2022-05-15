@@ -24,17 +24,18 @@ export class Scene {
 				)
 		);
 
-		this.ctx.canvas.addEventListener("tick", () => {
-			this.draw();
+		this.ctx.canvas.addEventListener("tick", (event: TickEvent) => {
+			this.draw(event.detail.frameCount);
 		});
 	}
 
-	private draw() {
+	private draw(frameCount: number) {
 		this.theme.drawSprite(
 			this.ctx,
 			this.theme.config.scene.name,
 			{ x: 0, y: 0 },
-			{ width: this.width, height: this.height }
+			{ width: this.width, height: this.height },
+			frameCount
 		);
 	}
 }

@@ -67,25 +67,24 @@ export class Theme {
 		this.assetsLoaded = true;
 	}
 
-	public updateFrames() {
-		this.sprites.forEach((sprite) => {
-			sprite.current = (sprite.current + 1) % sprite.images.length;
-		});
-	}
-
 	public drawSprite(
 		ctx: CanvasRenderingContext2D,
 		name: string,
 		pos: coordinates,
-		dims: dimensions
+		dims: dimensions,
+		frameCount = 0
 	) {
 		const sprite = this.sprites.find((x) => x.name === name);
 		if (!sprite) {
 			return;
 		}
 
+		const spriteFrame = Math.floor(
+			(frameCount / sprite.animationSpeed) % sprite.images.length
+		);
+
 		const img = this.images.find((x) =>
-			x.src.endsWith(`${sprite.images[sprite.current].replace("./", "")}`)
+			x.src.endsWith(`${sprite.images[spriteFrame].replace("./", "")}`)
 		);
 
 		if (!img) {

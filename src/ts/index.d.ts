@@ -15,6 +15,12 @@ declare type rectangle = {
 	d: coordinates;
 };
 
+declare interface TickEvent extends Event {
+	readonly detail?: {
+		frameCount: number;
+	};
+}
+
 declare interface FinishEvent extends Event {
 	readonly detail?: {
 		winner: number;
@@ -40,7 +46,7 @@ declare interface GamepadStickEvent extends Event {
 declare type Sprite = {
 	name: string;
 	images: string[];
-	current: number;
+	animationSpeed: number; // use next image every N frames, max 60
 };
 
 declare type SpriteSet = {
@@ -59,7 +65,6 @@ declare type themeConfig = {
 	scene: Sprite; // scene image, 1920x1080
 	colors: string[];
 	obstacles: rectangle[]; // outline obsacles within the scene
-	animationSpeed: number; // change image every N frames
 	players: {
 		default: SpriteSet; // player when standing still, 100x100
 		move: SpriteSet; // player when moving, 100x100
