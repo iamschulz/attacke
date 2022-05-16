@@ -454,7 +454,17 @@ export class Character {
 			(zone) =>
 				this.orientation >= zone.start && this.orientation < zone.end
 		);
-		return this.theme.config.players[this.player].default[direction.zone];
+
+		let action = "default";
+		if (this.action.blocking || this.action.blocking) {
+			action = "block";
+		} else if (this.action.attacking || this.action.attacking) {
+			action = "attack";
+		} else if (this.action.movingX || this.action.movingY) {
+			action = "move";
+		}
+
+		return this.theme.config.players[this.player][action][direction.zone];
 	}
 
 	private draw(frameCount: number): void {
