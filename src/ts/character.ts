@@ -486,20 +486,20 @@ export class Character {
 	private draw(frameCount: number): void {
 		this.ctx.save();
 		this.ctx.translate(
-			this.position.x + this.size / 2,
-			this.position.y + this.size / 2
+			Math.round(this.position.x + this.size / 2),
+			Math.round(this.position.y + this.size / 2)
 		);
 
 		this.theme.config.turnSprites && this.ctx.rotate(this.orientation);
 
-		// body
 		/*
-		this.ctx.shadowColor = config.theme.player[this.player];
+		// body
+		this.ctx.shadowColor = this.theme.config.colors[this.player];
 		this.ctx.shadowBlur = 10;
-		this.ctx.fillStyle = config.theme.player[this.player];
+		this.ctx.fillStyle = this.theme.config.colors[this.player];
 		this.ctx.fillRect(this.size / -2, this.size / -2, this.size, this.size);
 
-        // face
+		// face
 		this.ctx.shadowColor = "#ff00ff";
 		this.ctx.shadowBlur = 8;
 		this.ctx.fillStyle = "#ff00ff";
@@ -512,7 +512,6 @@ export class Character {
 			this.ctx,
 			this.getSprite().name,
 			{ x: this.size / -2, y: this.size / -2 },
-			{ width: this.size, height: this.size },
 			frameCount
 		);
 

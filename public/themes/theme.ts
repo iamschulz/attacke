@@ -71,7 +71,6 @@ export class Theme {
 		ctx: CanvasRenderingContext2D,
 		name: string,
 		pos: coordinates,
-		dims: dimensions,
 		frameCount = 0
 	) {
 		const sprite = this.sprites.find((x) => x.name === name);
@@ -91,6 +90,6 @@ export class Theme {
 			return;
 		}
 
-		ctx.drawImage(img, pos.x, pos.y, dims.width, dims.height);
+		ctx.drawImage(img, pos.x, pos.y);
 	}
 }

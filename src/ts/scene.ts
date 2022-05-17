@@ -34,7 +34,6 @@ export class Scene {
 			this.ctx,
 			this.theme.config.scene.name,
 			{ x: 0, y: 0 },
-			{ width: this.width, height: this.height },
 			frameCount
 		);
 	}

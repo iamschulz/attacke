@@ -30,6 +30,12 @@ export class Renderer {
 					frameCount: this.counter,
 				},
 			});
+			this.ctx.clearRect(
+				0,
+				0,
+				this.ctx.canvas.width,
+				this.ctx.canvas.height
+			);
 			this.ctx.canvas.dispatchEvent(tick);
 
 			this.counter++;
