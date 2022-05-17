@@ -253,13 +253,16 @@ export class Character {
 		);
 		obstacles.forEach((obstacle) => {
 			const collision = this.obstacle.collidesWith(obstacle);
+			const friction = 0.8;
 
 			if (!collision) {
 				return;
 			}
 
-			this.velocity.x = this.velocity.x + collision.overlapV.x * -1;
-			this.velocity.y = this.velocity.y + collision.overlapV.y * -1;
+			this.velocity.x =
+				(this.velocity.x + collision.overlapV.x * -1) * friction;
+			this.velocity.y =
+				(this.velocity.y + collision.overlapV.y * -1) * friction;
 		});
 	}
 
@@ -318,6 +321,16 @@ export class Character {
 		);
 		this.orientation = angle;
 
+		const obstacle = {
+			a: { x: this.position.x, y: this.position.y },
+			b: { x: this.position.x + this.size, y: this.position.y },
+			c: {
+				x: this.position.x + this.size,
+				y: this.position.y + this.size,
+			},
+			d: { x: this.position.x, y: this.position.y + this.size },
+		};
+
 		const rotatedObstacle = rotate(
 			{
 				a: { x: this.position.x, y: this.position.y },
@@ -330,7 +343,10 @@ export class Character {
 			},
 			this.orientation
 		);
-		this.obstacle.editObstacle(rotatedObstacle);
+
+		this.obstacle.editObstacle(
+			this.theme.config.turnSprites ? rotatedObstacle : obstacle
+		);
 	}
 
 	private attack(): void {
@@ -499,17 +515,6 @@ export class Character {
 			{ width: this.size, height: this.size },
 			frameCount
 		);
-
-		// shield
-		if (this.action.blocking && this.active) {
-			this.ctx.fillStyle = "#00ff00";
-			this.ctx.fillRect(
-				this.size / 2 + 20,
-				this.size / -2,
-				20,
-				this.size
-			);
-		}
 
 		this.ctx.restore();
 
