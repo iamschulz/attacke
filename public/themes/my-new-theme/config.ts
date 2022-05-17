@@ -1,6 +1,6 @@
 export const MyNewTheme: themeConfig = {
 	name: "my-new-theme",
-	colors: ["#4764a6", "#d3b447"],
+	colors: ["#368dc8", "#d3b447"],
 	scene: {
 		name: "scene",
 		images: ["./assets/scene1.png", "./assets/scene2.png"],
