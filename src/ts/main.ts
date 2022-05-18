@@ -73,6 +73,7 @@ export class Game {
 	start() {
 		const startEvent: FinishEvent = new Event("countdown");
 		this.ctx.canvas.dispatchEvent(startEvent);
+		console.log(this.obstacles);
 	}
 }
 

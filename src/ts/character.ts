@@ -182,6 +182,7 @@ export class Character {
 		config.controls[this.player].attack.forEach((key: string) => {
 			document.addEventListener("keydown", (event: KeyboardEvent) => {
 				if (
+					this.active &&
 					event.code === key &&
 					event.repeat === false &&
 					!this.action.cooldown
@@ -208,6 +209,7 @@ export class Character {
 		config.controls[this.player].block.forEach((key: string) => {
 			document.addEventListener("keydown", (event: KeyboardEvent) => {
 				if (
+					this.active &&
 					event.code === key &&
 					event.repeat === false &&
 					!this.action.cooldown
@@ -350,7 +352,7 @@ export class Character {
 	}
 
 	private attack(): void {
-		if (!this.action.attacking || this.action.cooldown) {
+		if (!this.active || !this.action.attacking || this.action.cooldown) {
 			return;
 		}
 
@@ -472,11 +474,17 @@ export class Character {
 		);
 
 		let action = "default";
-		if (this.action.blocking || this.action.blocking) {
+		if ((this.active && this.action.blocking) || this.action.blocking) {
 			action = "block";
-		} else if (this.action.attacking || this.action.attacking) {
+		} else if (
+			(this.active && this.action.attacking) ||
+			this.action.attacking
+		) {
 			action = "attack";
-		} else if (this.action.movingX || this.action.movingY) {
+		} else if (
+			this.active &&
+			(this.action.movingX || this.action.movingY)
+		) {
 			action = "move";
 		}
 
