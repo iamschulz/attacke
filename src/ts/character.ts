@@ -501,6 +501,7 @@ export class Character {
 		this.theme.config.turnSprites && this.ctx.rotate(this.orientation);
 
 		/*
+        // uncomment for debugging
 		// body
 		this.ctx.shadowColor = this.theme.config.colors[this.player];
 		this.ctx.shadowBlur = 10;
@@ -525,6 +526,8 @@ export class Character {
 
 		this.ctx.restore();
 
+		/*
+        // uncomment for debugging
 		// draw weapon in absolute space
 		if (this.action.attacking && this.active) {
 			const weaponPosition = this.getWeaponPosition();
@@ -538,6 +541,7 @@ export class Character {
 			this.ctx.closePath();
 			this.ctx.fill();
 		}
+        */
 	}
 
 	private onNextTick(frameCount: number): void {

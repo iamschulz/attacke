@@ -90,6 +90,6 @@ export class Theme {
 			return;
 		}
 
-		ctx.drawImage(img, pos.x, pos.y);
+		ctx.drawImage(img, pos.x + sprite.offset.x, pos.y + sprite.offset.y);
 	}
 }

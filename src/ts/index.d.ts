@@ -47,6 +47,7 @@ declare type Sprite = {
 	name: string;
 	images: string[];
 	animationSpeed: number; // use next image every N frames, max 60
+	offset: coordinates;
 };
 
 declare type SpriteSet = {
