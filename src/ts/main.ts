@@ -43,6 +43,11 @@ export class Game {
 
 		this.manageState();
 		this.start();
+
+		const audioRange = document.querySelector("#sound") as HTMLInputElement;
+		audioRange.addEventListener("input", () => {
+			this.theme.setBgmVolume(Number(audioRange.value) || 0);
+		});
 	}
 
 	manageState() {

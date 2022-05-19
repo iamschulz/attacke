@@ -553,7 +553,7 @@ export const MyNewTheme: themeConfig = {
 		ctx.shadowOffsetY = 2;
 		ctx.shadowBlur = 5;
 	},
-	bgAudio: "./assets/bg.mp3",
+	bgAudio: "./assets/xDeviruchi_Decisive_Battle_01.mp3",
 	attackAudio: "./assets/attack.mp3",
 	blockAudio: "./assets/block.mp3",
 };

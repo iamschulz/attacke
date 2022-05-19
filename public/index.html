@@ -48,6 +48,7 @@
 				width="1920"
 				height="1080"
 			></canvas>
+
 			<h2>Controls</h2>
 			<div class="controls">
 				<div class="controls__group move">
@@ -94,8 +95,33 @@
 						<use xlink:href="#icon-gamepad"></use>
 					</svg>
 				</div>
+
+				<div class="controls__group block">
+					<p>Sound:</p>
+					<input
+						type="range"
+						min="0"
+						max="0.5"
+						step="0.1"
+						value="0"
+						class="switch"
+						id="sound"
+						checked
+					/>
+				</div>
 			</div>
 		</main>
+
+		<footer>
+			<nav>
+				<ul>
+					<li>&copy; 2022</li>
+					<li><a href="/credits.html">Credits</a></li>
+					<li><a href="">Blog Post</a></li>
+					<li><a href="">Source Code</a></li>
+				</ul>
+			</nav>
+		</footer>
 		<script type="module" src="./generated/main.js"></script>
 	</body>
 </html>

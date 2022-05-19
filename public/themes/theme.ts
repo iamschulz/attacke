@@ -3,6 +3,7 @@ export class Theme {
 	public assetsLoaded: boolean = false;
 	private images: HTMLImageElement[] = [];
 	private sprites: Sprite[] = [];
+	private bgm: HTMLAudioElement | null;
 
 	constructor(config: themeConfig) {
 		this.config = config;
@@ -91,5 +92,24 @@ export class Theme {
 		}
 
 		ctx.drawImage(img, pos.x + sprite.offset.x, pos.y + sprite.offset.y);
+	}
+
+	public startBgm(vol: number) {
+		if (this.bgm) {
+			return;
+		}
+		const url = `./themes/${this.config.name}/${this.config.bgAudio}`;
+		this.bgm = new Audio(url);
+		this.bgm.loop = true;
+		this.bgm.volume = vol;
+		this.bgm.play();
+	}
+
+	public setBgmVolume(vol: number) {
+		if (this.bgm) {
+			this.bgm.volume = vol;
+		} else {
+			this.startBgm(vol);
+		}
 	}
 }
