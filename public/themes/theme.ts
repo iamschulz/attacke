@@ -95,7 +95,7 @@ export class Theme {
 	}
 
 	public startBgm(vol: number) {
-		if (this.bgm) {
+		if (this.bgm || vol === 0) {
 			return;
 		}
 		const url = `./themes/${this.config.name}/${this.config.bgAudio}`;
@@ -107,9 +107,9 @@ export class Theme {
 
 	public setBgmVolume(vol: number) {
 		if (this.bgm) {
-			this.bgm.volume = vol;
+			this.bgm.volume = vol / 4;
 		} else {
-			this.startBgm(vol);
+			this.startBgm(vol / 4);
 		}
 	}
 }

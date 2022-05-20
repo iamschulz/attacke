@@ -1,9 +1,10 @@
 import config from "../../config.json" assert { type: "json" };
 import { Collider2d, Polygon, Vector } from "collider2d";
 import { Game } from "./main";
-import { clamp, rotate } from "./util";
+import { clamp, getVolume, rotate } from "./util";
 import { Obstacle } from "./obstacle";
 import { Theme } from "../../public/themes/theme";
+import { isJSDocThisTag } from "typescript";
 
 export class Character {
 	private ctx: CanvasRenderingContext2D;
@@ -30,6 +31,12 @@ export class Character {
 		attacking: boolean;
 		blocking: boolean;
 		cooldown: boolean;
+	};
+	private audio: {
+		attack: HTMLAudioElement | null;
+		block: HTMLAudioElement | null;
+		collide: HTMLAudioElement | null;
+		win: HTMLAudioElement | null;
 	};
 
 	constructor(game: Game, player: number, theme: Theme) {
@@ -63,6 +70,7 @@ export class Character {
 		};
 
 		this.registerControls();
+		this.registerAudio();
 
 		window.requestAnimationFrame(() => {
 			this.move();
@@ -265,6 +273,8 @@ export class Character {
 				(this.velocity.x + collision.overlapV.x * -1) * friction;
 			this.velocity.y =
 				(this.velocity.y + collision.overlapV.y * -1) * friction;
+
+			this.playAudio(this.audio.collide);
 		});
 	}
 
@@ -397,8 +407,11 @@ export class Character {
 
 		const blocked = this.players[otherPlayerId].action.blocking;
 		if (blocked) {
+			this.playAudio(this.audio.block);
 			return;
 		}
+
+		this.playAudio(this.audio.attack);
 
 		const otherPlayerPolygon = new Polygon(new Vector(0, 0), [
 			new Vector(otherPlayer.a.x, otherPlayer.a.y),
@@ -430,6 +443,7 @@ export class Character {
 				winner: this.player,
 			},
 		});
+		this.playAudio(this.audio.win);
 		this.ctx.canvas.dispatchEvent(finish);
 	}
 
@@ -542,6 +556,24 @@ export class Character {
 			this.ctx.fill();
 		}
         */
+	}
+
+	private registerAudio(): void {
+		this.audio = { attack: null, block: null, collide: null, win: null };
+		["attack", "block", "collide", "win"].forEach((sound) => {
+			const audioName = this.theme.config[sound + "Audio"];
+			this.audio[sound] = audioName
+				? new Audio(`./themes/${this.theme.config.name}/${audioName}`)
+				: null;
+		});
+	}
+
+	private playAudio(audio: HTMLAudioElement): void {
+		if (audio && audio.paused) {
+			audio.volume = getVolume();
+			audio.currentTime = 0;
+			audio.play();
+		}
 	}
 
 	private onNextTick(frameCount: number): void {

@@ -4,7 +4,7 @@
 }
 
 :root {
-	--background-color: rgb(40, 43, 56);
+	--background-color: rgb(30, 33, 46);
 	--dark-color: rgb(12, 7, 28);
 	--font-color: rgb(155, 159, 168);
 	--accent-color: rgb(255, 77, 77);
@@ -160,12 +160,6 @@ nav ul {
 	color: var(--color-p2);
 }
 
-.credits {
-	text-align: center;
-	list-style: none;
-	margin-bottom: 8rem;
-}
-
 input[type="range"] {
 	-webkit-appearance: none;
 	margin: 1rem 0;
@@ -201,4 +195,11 @@ input[type="range"]::-moz-range-thumb {
 	border-radius: 0;
 	background: var(--accent-color);
 	border: 0;
+}
+
+.credits {
+	text-align: center;
+	list-style: none;
+	margin-bottom: 8rem;
+	gap: 1ch;
 }

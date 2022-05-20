@@ -1,4 +1,8 @@
-export function rotate(object: rectangle, angle: number, offset = { x: 0, y: 0 }): rectangle {
+export function rotate(
+	object: rectangle,
+	angle: number,
+	offset = { x: 0, y: 0 }
+): rectangle {
 	const { a, b, c, d } = object;
 	const center = {
 		x: (a.x + b.x + c.x + d.x) / 4 - offset.x,
@@ -32,12 +36,18 @@ export function clamp(num, min, max) {
 	return Math.min(Math.max(num, min), max);
 }
 
+export function hexToRGB(hex: string): { r: number; g: number; b: number } {
+	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result
+		? {
+				r: parseInt(result[1], 16),
+				g: parseInt(result[2], 16),
+				b: parseInt(result[3], 16),
+		  }
+		: null;
+}
 
-export function hexToRGB(hex: string): { r: number, g: number, b: number } {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-    } : null;
+export function getVolume(): number {
+	const volumeControl = document.getElementById("sound") as HTMLInputElement;
+	return parseFloat(volumeControl.value);
 }

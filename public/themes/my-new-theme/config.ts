@@ -556,4 +556,6 @@ export const MyNewTheme: themeConfig = {
 	bgAudio: "./assets/xDeviruchi_Decisive_Battle_01.mp3",
 	attackAudio: "./assets/attack.mp3",
 	blockAudio: "./assets/block.mp3",
+	collideAudio: "./assets/bump.mp3",
+	winAudio: "./assets/win.mp3",
 };

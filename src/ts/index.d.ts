@@ -77,4 +77,6 @@ declare type themeConfig = {
 	bgAudio: string; // link to background music audio
 	attackAudio: string; // link to attack audio
 	blockAudio: string; // link to block audio
+	collideAudio: string; // lnk to collision audio
+	winAudio: string; // link to win audio
 };
