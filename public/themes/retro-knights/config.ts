@@ -1,5 +1,5 @@
-export const MyNewTheme: themeConfig = {
-	name: "my-new-theme",
+export const RetroKnights: themeConfig = {
+	name: "retro-knights",
 	colors: ["#368dc8", "#d3b447"],
 	scene: {
 		name: "scene",

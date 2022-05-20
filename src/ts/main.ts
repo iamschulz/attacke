@@ -25,7 +25,7 @@ export class Game {
 		const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 		this.ctx = canvas.getContext("2d");
 		this.collider = new Collider2d();
-		this.theme = new Theme(themes.MyNewTheme);
+		this.theme = new Theme(themes.RetroKnights);
 		this.obstacles = [];
 		this.scene = new Scene(this, this.theme);
 		this.players = [];
