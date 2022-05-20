@@ -1,3 +1,4 @@
-public/generated/*
+public/main.js
+public/sw.js
 node_modules
 .DS_Store

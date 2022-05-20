@@ -8,6 +8,8 @@ import { Gui } from "./gui";
 import { GamepadAdapter } from "./gamepadAdapter";
 import { themes } from "../../public/themes/index";
 import { Theme } from "../../public/themes/theme";
+import { registerServiceWorker } from "./registerServiceWorker";
+import { showInstallButton } from "./showInstallButton";
 
 export class Game {
 	ctx: CanvasRenderingContext2D;
@@ -85,3 +87,6 @@ export class Game {
 }
 
 new Game();
+
+registerServiceWorker();
+showInstallButton();

@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const watchFlag = process.argv.indexOf('--watch') > -1;
+const watchFlag = process.argv.indexOf("--watch") > -1;
 
-require('esbuild')
+require("esbuild")
 	.build({
-		entryPoints: ['src/ts/main.ts'],
+		entryPoints: ["src/ts/main.ts", "src/ts/sw.ts"],
 		bundle: true,
-		outfile: 'public/generated/main.js',
+		outdir: "public",
 		watch: watchFlag,
 	})
 	.catch(() => process.exit(1));

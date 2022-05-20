@@ -2,5 +2,6 @@
 	"prettier.printWidth": 120,
 	"prettier.singleQuote": false,
 	"prettier.tabWidth": 4,
-	"prettier.useTabs": true
+	"prettier.useTabs": true,
+	"liveServer.settings.root": "/public"
 }
