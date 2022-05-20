@@ -1,6 +1,6 @@
-# Versus
+# Attacke!
 
-Versus is a simple two-player fighting game
+Attacke! is a simple two-player fighting game
 
 ## Install:
 
@@ -14,6 +14,11 @@ Versus is a simple two-player fighting game
 
 -   `yarn watch`
 -   open `public/index.html` in your browser
+
+## Deploy
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d2cd4dcc-d69a-4008-9fd8-00aa908b1039/deploy-status)](https://app.netlify.com/sites/cute-cajeta-d38abe/deploys)
+
+The `main` branch auto-deploys to https://cute-cajeta-d38abe.netlify.app/
 
 ## Play
 
