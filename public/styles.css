@@ -1,6 +1,6 @@
 @font-face {
 	font-family: "PressStart2P";
-	src: url(./assets/PressStart2P.woff2) format("woff2");
+	src: url("/assets/PressStart2P.woff2") format("woff2");
 }
 
 :root {

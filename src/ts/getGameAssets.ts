@@ -17,7 +17,7 @@ export const getGameAssets = (): string[] => {
 			});
 		});
 	});
-	retroKnightAssets = retroKnightAssets.map((x) => `themes/retro-knights/assets/${x}`);
+	retroKnightAssets = retroKnightAssets.map((x) => `/themes/retro-knights/assets/${x}`);
 
 	assets.push(...retroKnightAssets);
 	return assets;

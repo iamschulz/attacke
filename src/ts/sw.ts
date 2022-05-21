@@ -1,28 +1,31 @@
 /// <reference lib="webworker" />
 import { getGameAssets } from "./getGameAssets";
 
-const version = "0.0.2";
+const version = "0.0.3-dev";
 const cacheName = `attacke-${version}`;
+const channel = new BroadcastChannel("sw-messages");
 
 const cacheAssets = () => {
+	const assets = [
+		"/",
+		"/index.html",
+		"/credits.html",
+		"/styles.css",
+		"/main.js",
+		"/manifest.json",
+		"/assets/PressStart2P.woff2",
+		"/assets/favicon.svg",
+		...getGameAssets(),
+	];
+
 	caches.open(cacheName).then(function (cache) {
-		const assets = getGameAssets();
-		const pageAssets = [
-			"/",
-			"/sw.js",
-			"/index.html",
-			"/credits.html",
-			"/styles.css",
-			"/main.js",
-			"assets/PressStart2P.woff2",
-		];
-		return cache.addAll([...pageAssets, ...assets]);
+		cache.addAll(assets);
 	});
 };
 
 self.addEventListener("fetch", function (event) {
 	event.respondWith(
-		caches.open("mysite-dynamic").then(function (cache) {
+		caches.open(cacheName).then(function (cache) {
 			return cache.match(event.request).then(function (response) {
 				return (
 					response ||
@@ -35,9 +38,10 @@ self.addEventListener("fetch", function (event) {
 	);
 });
 
-self.addEventListener("message", function (event) {
-	console.log("msg", event);
-	if (event.data === "installed") {
-		cacheAssets();
+channel.addEventListener("message", (event) => {
+	switch (event.data.message) {
+		case "cache-assets":
+			cacheAssets();
+			break;
 	}
 });

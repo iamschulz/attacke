@@ -1,4 +1,4 @@
-export const showInstallButton = () => {
+export const showInstallButton = (channel: BroadcastChannel) => {
 	const button = document.querySelector("[pwa-install-button]");
 	if (!button) {
 		return;
@@ -22,7 +22,7 @@ export const showInstallButton = () => {
 	window.addEventListener("appinstalled", () => {
 		button.setAttribute("hidden", "hidden");
 		deferredPrompt = null;
-		navigator.serviceWorker.controller.postMessage("installed");
+		channel.postMessage({ message: "cache-assets" });
 		// todo: check for navigator.serviceWorker.controller. if false, try again
 	});
 };
