@@ -1,19 +1,24 @@
 /// <reference lib="webworker" />
 import { getGameAssets } from "./getGameAssets";
 
-const version = "0.0.1";
+const version = "0.0.2";
 const cacheName = `attacke-${version}`;
 
-self.addEventListener("install", function (event) {
-	/*
-	event.waitUntil(
-		caches.open(cacheName).then(function (cache) {
-			const assets = getGameAssets();
-			return cache.addAll(["/", "/credits.html", "/styles.css", "/main.js", ...assets]);
-		})
-	);
-    */
-});
+const cacheAssets = () => {
+	caches.open(cacheName).then(function (cache) {
+		const assets = getGameAssets();
+		const pageAssets = [
+			"/",
+			"/sw.js",
+			"/index.html",
+			"/credits.html",
+			"/styles.css",
+			"/main.js",
+			"assets/PressStart2P.woff2",
+		];
+		return cache.addAll([...pageAssets, ...assets]);
+	});
+};
 
 self.addEventListener("fetch", function (event) {
 	event.respondWith(
@@ -22,11 +27,17 @@ self.addEventListener("fetch", function (event) {
 				return (
 					response ||
 					fetch(event.request).then(function (response) {
-						//cache.put(event.request, response.clone());
 						return response;
 					})
 				);
 			});
 		})
 	);
+});
+
+self.addEventListener("message", function (event) {
+	console.log("msg", event);
+	if (event.data === "installed") {
+		cacheAssets();
+	}
 });

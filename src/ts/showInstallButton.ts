@@ -1,6 +1,4 @@
-import { registerServiceWorker } from "./registerServiceWorker";
-
-export const showInstallButton = (sw: ServiceWorkerRegistration) => {
+export const showInstallButton = () => {
 	const button = document.querySelector("[pwa-install-button]");
 	if (!button) {
 		return;
@@ -24,5 +22,7 @@ export const showInstallButton = (sw: ServiceWorkerRegistration) => {
 	window.addEventListener("appinstalled", () => {
 		button.setAttribute("hidden", "hidden");
 		deferredPrompt = null;
+		navigator.serviceWorker.controller.postMessage("installed");
+		// todo: check for navigator.serviceWorker.controller. if false, try again
 	});
 };
