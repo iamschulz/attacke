@@ -40,6 +40,14 @@ body {
 	color: var(--accent-color);
 }
 
+:is(button) {
+	background-color: var(--accent-color);
+	border: none;
+	border-radius: 2px;
+	padding: 0.5rem 1ch;
+	margin: 0.5rem;
+}
+
 footer {
 	max-width: calc(80vh * 16 / 9);
 	margin: auto;
