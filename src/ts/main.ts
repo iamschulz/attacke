@@ -1,3 +1,4 @@
+import { Audio } from "./audio";
 import { Countdown } from "./countdown";
 import { Obstacle } from "./obstacle";
 import { Character } from "./character";
@@ -22,6 +23,7 @@ export class Game {
 	gui: Gui;
 	theme: Theme;
 	renderer: Renderer;
+	audio: Audio;
 
 	constructor() {
 		const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -31,6 +33,7 @@ export class Game {
 		this.obstacles = [];
 		this.scene = new Scene(this, this.theme);
 		this.players = [];
+		this.audio = new Audio(this.theme);
 
 		const player1 = new Character(this, 0, this.theme);
 		const player2 = new Character(this, 1, this.theme);
@@ -46,6 +49,17 @@ export class Game {
 		this.manageState();
 		this.manageAudio();
 		this.start();
+
+		window.addEventListener("keydown", (e) => {
+			if (e.key === "g") {
+				console.log("play g");
+				this.audio.play(this.theme.config.attackAudio);
+			}
+			if (e.key === "h") {
+				console.log("play h");
+				this.audio.play(this.theme.config.collideAudio);
+			}
+		});
 	}
 
 	manageState() {
@@ -76,7 +90,7 @@ export class Game {
 	manageAudio() {
 		const audioRange = document.querySelector("#sound") as HTMLInputElement;
 		audioRange.addEventListener("input", () => {
-			this.theme.setBgmVolume(Number(audioRange.value) || 0);
+			this.audio.setVolume(audioRange.valueAsNumber);
 		});
 	}
 

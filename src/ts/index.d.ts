@@ -105,3 +105,13 @@ interface BeforeInstallPromptEvent extends Event {
 	 */
 	prompt(): Promise<void>;
 }
+
+interface Window {
+	webkitAudioContext: typeof AudioContext;
+}
+
+type Sounds = {
+	[key: string]: {
+		playing: boolean;
+	};
+};

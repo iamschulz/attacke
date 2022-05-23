@@ -25,14 +25,8 @@ export class Theme {
 	}
 
 	public assignGlobalColors() {
-		document.documentElement.style.setProperty(
-			"--color-p1",
-			this.config.colors[0]
-		);
-		document.documentElement.style.setProperty(
-			"--color-p2",
-			this.config.colors[1]
-		);
+		document.documentElement.style.setProperty("--color-p1", this.config.colors[0]);
+		document.documentElement.style.setProperty("--color-p2", this.config.colors[1]);
 	}
 
 	public loadAssets() {
@@ -51,15 +45,13 @@ export class Theme {
 			const spriteSets = ["default", "move", "attack", "block"];
 			spriteSets.forEach((spriteSet) => {
 				Object.keys(player[spriteSet]).forEach((key: string) => {
-					player[spriteSet][key].images.forEach(
-						async (image: string) => {
-							const imageResp = await this.loadImage(image);
-							if (toLoad.includes(imageResp)) {
-								return;
-							}
-							toLoad.push(imageResp);
+					player[spriteSet][key].images.forEach(async (image: string) => {
+						const imageResp = await this.loadImage(image);
+						if (toLoad.includes(imageResp)) {
+							return;
 						}
-					);
+						toLoad.push(imageResp);
+					});
 					this.sprites.push(player[spriteSet][key]);
 				});
 			});
@@ -68,24 +60,15 @@ export class Theme {
 		this.assetsLoaded = true;
 	}
 
-	public drawSprite(
-		ctx: CanvasRenderingContext2D,
-		name: string,
-		pos: coordinates,
-		frameCount = 0
-	) {
+	public drawSprite(ctx: CanvasRenderingContext2D, name: string, pos: coordinates, frameCount = 0) {
 		const sprite = this.sprites.find((x) => x.name === name);
 		if (!sprite) {
 			return;
 		}
 
-		const spriteFrame = Math.floor(
-			(frameCount / sprite.animationSpeed) % sprite.images.length
-		);
+		const spriteFrame = Math.floor((frameCount / sprite.animationSpeed) % sprite.images.length);
 
-		const img = this.images.find((x) =>
-			x.src.endsWith(`${sprite.images[spriteFrame].replace("./", "")}`)
-		);
+		const img = this.images.find((x) => x.src.endsWith(`${sprite.images[spriteFrame].replace("./", "")}`));
 
 		if (!img) {
 			return;
@@ -98,11 +81,13 @@ export class Theme {
 		if (this.bgm || vol === 0) {
 			return;
 		}
+		/*
 		const url = `./themes/${this.config.name}/${this.config.bgAudio}`;
 		this.bgm = new Audio(url);
 		this.bgm.loop = true;
 		this.bgm.volume = vol;
 		this.bgm.play();
+		*/
 	}
 
 	public setBgmVolume(vol: number) {
