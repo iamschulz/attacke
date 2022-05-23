@@ -88,6 +88,8 @@ export class Game {
 
 new Game();
 
-const channel = new BroadcastChannel("sw-messages");
-registerServiceWorker();
-showInstallButton(channel);
+if (window.BroadcastChannel) {
+	const channel = new BroadcastChannel("sw-messages");
+	registerServiceWorker();
+	showInstallButton(channel);
+}

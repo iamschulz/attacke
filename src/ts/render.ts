@@ -6,6 +6,7 @@ export class Renderer {
 	fps: number;
 	ticker: number;
 	counter: number;
+	oldTimeStamp: number = 0;
 
 	constructor(ctx: CanvasRenderingContext2D, theme: Theme) {
 		this.ctx = ctx;
@@ -16,30 +17,37 @@ export class Renderer {
 	}
 
 	private initTicker() {
-		this.ticker = setInterval(() => {
-			// to allow for animations lasting 1s
-			if (this.counter >= this.fps * 2) {
-				this.counter = 0;
-			}
+		window.requestAnimationFrame(() => {
+			this.tick();
+			this.initTicker();
+		});
+	}
 
-			const tick: TickEvent = new CustomEvent("tick", {
-				bubbles: true,
-				cancelable: true,
-				composed: false,
-				detail: {
-					frameCount: this.counter,
-				},
-			});
-			this.ctx.clearRect(
-				0,
-				0,
-				this.ctx.canvas.width,
-				this.ctx.canvas.height
-			);
-			this.ctx.canvas.dispatchEvent(tick);
+	private tick() {
+		const timeStamp = performance.now();
+		const secondsPassed = (timeStamp - this.oldTimeStamp) / 1000;
+		this.oldTimeStamp = timeStamp;
 
-			this.counter++;
-		}, 1000 / this.fps);
-		// todo: maybe switch to requestanimationframe to mitigate lags?
+		// Calculate fps
+		const fps = Math.round(1 / secondsPassed);
+		//console.log(fps);
+
+		// to allow for animations lasting 1s
+		if (this.counter >= this.fps * 2) {
+			this.counter = 0;
+		}
+
+		const tick: TickEvent = new CustomEvent("tick", {
+			bubbles: true,
+			cancelable: true,
+			composed: false,
+			detail: {
+				frameCount: this.counter,
+			},
+		});
+		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+		this.ctx.canvas.dispatchEvent(tick);
+
+		this.counter++;
 	}
 }
