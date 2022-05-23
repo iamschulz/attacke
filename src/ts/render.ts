@@ -1,4 +1,5 @@
 import { Theme } from "../../public/themes/theme";
+import { clamp } from "./util";
 
 export class Renderer {
 	ctx: CanvasRenderingContext2D;
@@ -30,7 +31,7 @@ export class Renderer {
 
 		// Calculate fps
 		const fps = Math.round(1 / secondsPassed);
-		//console.log(fps);
+		const frameSkip = clamp(Math.round((60 - fps) / fps), 0, 30);
 
 		// to allow for animations lasting 1s
 		if (this.counter >= this.fps * 2) {
@@ -43,6 +44,7 @@ export class Renderer {
 			composed: false,
 			detail: {
 				frameCount: this.counter,
+				frameSkip: frameSkip,
 			},
 		});
 		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);

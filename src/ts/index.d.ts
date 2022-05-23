@@ -18,6 +18,7 @@ declare type rectangle = {
 declare interface TickEvent extends Event {
 	readonly detail?: {
 		frameCount: number;
+		frameSkip: number;
 	};
 }
 
