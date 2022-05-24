@@ -110,7 +110,7 @@ interface Window {
 	webkitAudioContext: typeof AudioContext;
 }
 
-type Sounds = {
+type SoundLibrary = {
 	[key: string]: {
 		playing: boolean;
 	};

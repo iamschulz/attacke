@@ -47,7 +47,6 @@ export class Game {
 		this.renderer = new Renderer(this.ctx, this.theme);
 
 		this.manageState();
-		this.manageAudio();
 		this.start();
 
 		window.addEventListener("keydown", (e) => {
@@ -84,13 +83,6 @@ export class Game {
 	togglePlayers(active: boolean) {
 		this.players.forEach((player) => {
 			player.setActive(active);
-		});
-	}
-
-	manageAudio() {
-		const audioRange = document.querySelector("#sound") as HTMLInputElement;
-		audioRange.addEventListener("input", () => {
-			this.audio.setVolume(audioRange.valueAsNumber);
 		});
 	}
 

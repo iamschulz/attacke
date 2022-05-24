@@ -4,7 +4,8 @@ export class Audio {
 	private theme: Theme;
 	private ctx: AudioContext;
 	private vol: GainNode;
-	private sounds: Sounds;
+	private sounds: SoundLibrary;
+	private bgmPlaying: boolean;
 
 	constructor(theme: Theme) {
 		this.theme = theme;
@@ -12,25 +13,27 @@ export class Audio {
 		this.vol = this.ctx.createGain();
 		this.vol.connect(this.ctx.destination);
 		this.vol.gain.value = 0;
-		this.sounds = {};
-		this.theme.config.attackAudio;
+		this.populateSoundLibrary();
+		this.enableVolumeControl();
+	}
 
+	private getAudioUrl(url: string) {
+		return `/themes/${this.theme.config.name}/${url.replace("./", "")}`;
+	}
+
+	private populateSoundLibrary() {
+		this.sounds = {};
 		const actions = [
 			this.getAudioUrl(this.theme.config.attackAudio),
 			this.getAudioUrl(this.theme.config.blockAudio),
 			this.getAudioUrl(this.theme.config.collideAudio),
 			this.getAudioUrl(this.theme.config.winAudio),
 		];
-
 		actions.forEach((action) => {
 			this.sounds[action] = {
 				playing: false,
 			};
 		});
-	}
-
-	private getAudioUrl(url: string) {
-		return `/themes/${this.theme.config.name}/${url.replace("./", "")}`;
 	}
 
 	private async getSoundFile(url: string): Promise<ArrayBuffer> {
@@ -65,7 +68,40 @@ export class Audio {
 		});
 	}
 
-	public setVolume(volume: number) {
+	public async playBGM(): Promise<void> {
+		if (this.bgmPlaying) {
+			return;
+		}
+
+		const bgmVol = this.ctx.createGain();
+		bgmVol.connect(this.vol);
+		bgmVol.gain.value = 0.25;
+
+		const arrayBuffer = await this.getSoundFile(this.getAudioUrl(this.theme.config.bgAudio));
+		const source = this.ctx.createBufferSource();
+
+		this.ctx.decodeAudioData(arrayBuffer, (audioBuffer) => {
+			source.buffer = audioBuffer;
+			source.connect(bgmVol);
+			source.loop = true;
+			source.start();
+		});
+
+		this.bgmPlaying = true;
+	}
+
+	private setVolume(volume: number) {
 		this.vol.gain.value = volume;
+	}
+
+	private enableVolumeControl() {
+		const audioRange = document.querySelector("#sound") as HTMLInputElement;
+		audioRange.addEventListener("input", () => {
+			this.setVolume(audioRange.valueAsNumber);
+
+			if (!this.bgmPlaying && audioRange.valueAsNumber > 0) {
+				this.playBGM();
+			}
+		});
 	}
 }
