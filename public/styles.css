@@ -94,7 +94,7 @@ nav ul {
 }
 
 .controls__group:not(:last-of-type) {
-	margin-right: 5rem;
+	margin: 0 2.5rem;
 }
 
 .controls__cursor,
