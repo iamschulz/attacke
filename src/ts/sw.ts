@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 import { getGameAssets } from "./getGameAssets";
 
-const version = "0.0.3-dev";
+const version = "0.0.4";
 const cacheName = `attacke-${version}`;
 const channel = new BroadcastChannel("sw-messages");
 

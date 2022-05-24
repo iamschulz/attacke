@@ -99,3 +99,10 @@ if (window.BroadcastChannel) {
 	registerServiceWorker();
 	showInstallButton(channel);
 }
+
+if (window.matchMedia("(display-mode: standalone)").matches) {
+    document.querySelectorAll("[external-link]").forEach((el) => {
+        el.setAttribute("target", "_blank");
+        el.setAttribute("rel", "noopener noreferrer");
+    });
+}
