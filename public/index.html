@@ -5,10 +5,12 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="theme-color" content="#1e212e" />
+        <meta name="description" content="Attacke! is a simple two-player fighting game">
 		<link rel="stylesheet" href="./styles.css" />
-		<link rel="icon" href="./assets/favicon.svg" />
+		<link rel="icon" href="./assets/icon-64x64.png" />
+        <link rel="apple-touch-icon" href="./assets/icon-192x192.png" />
 		<link rel="manifest" href="./manifest.json" />
-		<title>Attacke</title>
+		<title>Attacke!</title>
 	</head>
 	<body>
 		<svg hidden xmlns="http://www.w3.org/2000/svg">
@@ -35,12 +37,12 @@
                     <strong>Attacke!</strong> is a silly little game written in JavaScript. You'll need to enable it to play.
                 </p>
             </noscript>
-			<canvas tabindex="1" id="canvas" width="1920" height="1080"></canvas>
+			<canvas tabindex="0" id="canvas" width="1920" height="1080"></canvas>
 
 			<h2>Controls</h2>
 			<div class="controls">
 				<div class="controls__group move">
-					<p>Movement:</p>
+					<p class="controls__header">Movement:</p>
 					<ul class="controls__cursor">
 						<li><kbd class="color-p1">W</kbd></li>
 						<li><kbd class="color-p1">A</kbd></li>
@@ -61,7 +63,7 @@
 				</div>
 
 				<div class="controls__group attack">
-					<p>Attack:</p>
+					<p class="controls__header">Attack:</p>
 					<ul class="controls__attack">
 						<li><kbd class="color-p1">R</kbd></li>
 						<li><kbd class="color-p2">P</kbd></li>
@@ -73,7 +75,7 @@
 				</div>
 
 				<div class="controls__group block">
-					<p>Block:</p>
+					<p class="controls__header">Block:</p>
 					<ul class="controls__block">
 						<li><kbd class="color-p1">T</kbd></li>
 						<li><kbd class="color-p2">O</kbd></li>
@@ -85,7 +87,7 @@
 				</div>
 
 				<div class="controls__group block">
-					<p>Sound:</p>
+					<label class="controls__header" for="sound">Sound:</label>
 					<input type="range" min="0" max="1" step="0.1" value="0" id="sound" checked />
 				</div>
 			</div>

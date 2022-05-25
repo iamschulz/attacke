@@ -1,6 +1,7 @@
 @font-face {
 	font-family: "PressStart2P";
 	src: url("/assets/PressStart2P.woff2") format("woff2");
+	font-display: swap;
 }
 
 :root {
@@ -126,7 +127,8 @@ nav ul {
 	justify-content: center;
 }
 
-.controls__group p {
+.controls__header {
+	display: block;
 	font-size: 1.5rem;
 	margin: 3rem 0 0 0;
 }
