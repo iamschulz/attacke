@@ -1,5 +1,5 @@
 export const showInstallButton = (channel: BroadcastChannel) => {
-	const button = document.querySelector("[pwa-install-button]");
+	const button = document.querySelector("[data-type='pwa-install-button']");
 	if (!button) {
 		return;
 	}

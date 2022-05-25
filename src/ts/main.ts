@@ -101,8 +101,8 @@ if (window.BroadcastChannel) {
 }
 
 if (window.matchMedia("(display-mode: standalone)").matches) {
-    document.querySelectorAll("[external-link]").forEach((el) => {
-        el.setAttribute("target", "_blank");
-        el.setAttribute("rel", "noopener noreferrer");
-    });
+	document.querySelectorAll("[data-link='external']").forEach((el) => {
+		el.setAttribute("target", "_blank");
+		el.setAttribute("rel", "noopener noreferrer");
+	});
 }
