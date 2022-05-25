@@ -18,8 +18,8 @@ Attacke! is a simple two-player fighting game
 ## Deploy
 [![Netlify Status](https://api.netlify.com/api/v1/badges/d2cd4dcc-d69a-4008-9fd8-00aa908b1039/deploy-status)](https://app.netlify.com/sites/cute-cajeta-d38abe/deploys)
 
-The `main` branch auto-deploys to https://attacke.lol
-The `dev` branch auto-deploys to https://dev--cute-cajeta-d38abe.netlify.app/
+- The `main` branch auto-deploys to https://attacke.lol
+- The `dev` branch auto-deploys to https://dev--cute-cajeta-d38abe.netlify.app/
 
 ## Play
 
