@@ -44,6 +44,12 @@ declare interface GamepadStickEvent extends Event {
 	};
 }
 
+declare interface LoadingEvent extends Event {
+	readonly detail: {
+		progress: number;
+	};
+}
+
 declare type Sprite = {
 	name: string;
 	images: string[];

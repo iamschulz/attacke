@@ -28,8 +28,9 @@ export class Game {
 	constructor() {
 		const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 		this.ctx = canvas.getContext("2d");
+		this.showLoader();
 		this.collider = new Collider2d();
-		this.theme = new Theme(themes.RetroKnights);
+		this.theme = new Theme(this.ctx, themes.RetroKnights);
 		this.obstacles = [];
 		this.scene = new Scene(this, this.theme);
 		this.players = [];
@@ -48,17 +49,19 @@ export class Game {
 
 		this.manageState();
 		this.start();
+	}
 
-		window.addEventListener("keydown", (e) => {
-			if (e.key === "g") {
-				console.log("play g");
-				this.audio.play(this.theme.config.attackAudio);
+	showLoader() {
+		const loader = document.querySelector(".loader");
+		const progress = loader.querySelector("progress");
+		loader.removeAttribute("hidden");
+		this.ctx.canvas.addEventListener("loadingEvent", ((e: LoadingEvent) => {
+			progress.value = e.detail.progress;
+			if (e.detail.progress === 100) {
+				loader.setAttribute("hidden", "true");
+				this.ctx.canvas.classList.add("fade-in");
 			}
-			if (e.key === "h") {
-				console.log("play h");
-				this.audio.play(this.theme.config.collideAudio);
-			}
-		});
+		}) as EventListener);
 	}
 
 	manageState() {

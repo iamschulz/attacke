@@ -1,11 +1,12 @@
 export class Theme {
+	private ctx: CanvasRenderingContext2D;
 	public config: themeConfig;
 	public assetsLoaded: boolean = false;
 	private images: HTMLImageElement[] = [];
 	private sprites: Sprite[] = [];
-	private bgm: HTMLAudioElement | null;
 
-	constructor(config: themeConfig) {
+	constructor(ctx: CanvasRenderingContext2D, config: themeConfig) {
+		this.ctx = ctx;
 		this.config = config;
 
 		this.assignGlobalColors();
@@ -37,6 +38,9 @@ export class Theme {
 			if (toLoad.includes(imageResp)) {
 				return;
 			}
+			imageResp.onload = () => {
+				this.onAssetLoaded(toLoad);
+			};
 			toLoad.push(imageResp);
 		});
 		this.sprites.push(this.config.scene);
@@ -50,14 +54,32 @@ export class Theme {
 						if (toLoad.includes(imageResp)) {
 							return;
 						}
+						imageResp.onload = () => {
+							this.onAssetLoaded(toLoad);
+						};
 						toLoad.push(imageResp);
 					});
 					this.sprites.push(player[spriteSet][key]);
 				});
 			});
 		});
+	}
 
-		this.assetsLoaded = true;
+	private onAssetLoaded(assetList: HTMLImageElement[]) {
+		const loadComplete = assetList.every((x) => x.complete);
+		const progress = Math.floor(
+			((assetList.length - assetList.filter((x) => !x.complete).length) / assetList.length) * 100
+		);
+		const loadingEvent: LoadingEvent = new CustomEvent("loadingEvent", {
+			detail: {
+				progress,
+			},
+		});
+		this.ctx.canvas.dispatchEvent(loadingEvent);
+
+		if (loadComplete) {
+			this.assetsLoaded = true;
+		}
 	}
 
 	public drawSprite(ctx: CanvasRenderingContext2D, name: string, pos: coordinates, frameCount = 0) {
