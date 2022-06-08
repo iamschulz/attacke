@@ -4,8 +4,8 @@
 	"display": "fullscreen",
 	"scope": "/",
 	"start_url": "/",
-	"name": "Attacke",
-	"short_name": "Attacke",
+	"name": "Attacke!",
+	"short_name": "Attacke!",
 	"icons": [
 		{
 			"src": "assets/icon-192x192.png",
@@ -27,11 +27,11 @@
 			"sizes": "512x512",
 			"type": "image/png"
 		},
-        {
+		{
 			"src": "assets/icon-512x512.png",
 			"sizes": "512x512",
 			"type": "image/png",
-            "purpose": "maskable"
+			"purpose": "maskable"
 		}
 	]
 }

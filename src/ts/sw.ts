@@ -23,18 +23,19 @@ const cacheAssets = () => {
 	});
 };
 
-self.addEventListener("fetch", function (event) {
+self.addEventListener("fetch", (event) => {
 	event.respondWith(
-		caches.open(cacheName).then(function (cache) {
-			return cache.match(event.request).then(function (response) {
-				return (
-					response ||
-					fetch(event.request).then(function (response) {
-						return response;
-					})
-				);
-			});
-		})
+		(async () => {
+			const cacheResponse = await caches.match(event.request);
+			if (cacheResponse) {
+				return cacheResponse;
+			}
+			const response = await fetch(event.request);
+			const cache = await caches.open(cacheName);
+			cache.put(event.request, response.clone());
+			console.log("additional caching", event.request.url);
+			return response;
+		})()
 	);
 });
 
