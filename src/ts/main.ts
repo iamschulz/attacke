@@ -103,7 +103,7 @@ if (window.BroadcastChannel) {
 	showInstallButton(channel);
 }
 
-if (window.matchMedia("(display-mode: standalone)").matches) {
+if (window.matchMedia("(display-mode: fullscreen)").matches) {
 	document.querySelectorAll("[data-link='external']").forEach((el) => {
 		el.setAttribute("target", "_blank");
 		el.setAttribute("rel", "noopener noreferrer");
