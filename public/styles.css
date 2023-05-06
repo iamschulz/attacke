@@ -264,23 +264,19 @@ input[type="range"]::-moz-range-thumb {
 }
 
 select {
+	appearance: none;
 	position: relative;
 	margin: 0.5rem 0;
-	padding: 0.3rem 1ch;
+	padding: 0.3rem 3.5ch 0.3rem 1ch;
 	background: var(--dark-color);
 	font-family: var(--font-base);
 	font-size: 1.2rem;
 	color: var(--font-color);
 	border: 0;
-}
-
-select::after {
-	content: "";
-	justify-self: end;
-	width: 0.8em;
-	height: 0.5em;
-	background-color: var(--font-base);
-	clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+	background-image: url("data:image/svg+xml,%3Csvg width='168' height='87' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m-0.26362,-0.08446l168.47524,0.05357l-82.26948,87.26948c-28.73525,-29.10768 -57.47051,-58.21536 -86.20576,-87.32305z' fill='%23a3abae'/%3E%3C/svg%3E");
+	background-repeat: no-repeat no-repeat;
+	background-position: calc(100% - 1ch) center;
+	background-size: 1rem;
 }
 
 .credits {
