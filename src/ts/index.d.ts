@@ -66,6 +66,8 @@ declare type SpriteSet = {
 	sw: Sprite;
 	w: Sprite;
 	nw: Sprite;
+} | {
+    x: Sprite;
 };
 
 declare type themeConfig = {
