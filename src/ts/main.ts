@@ -27,33 +27,30 @@ export class Game {
 
 	constructor() {
 		const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-		this.ctx = canvas.getContext("2d");
+		if (!canvas || !canvas.getContext("2d")) {
+			console.error("canvas is missing");
+			return;
+		}
+		this.ctx = canvas.getContext("2d")!;
 		this.showLoader();
 		this.collider = new Collider2d();
-		this.theme = new Theme(this.ctx, themes.RetroKnights);
-		this.obstacles = [];
-		this.scene = new Scene(this, this.theme);
-		this.players = [];
-		this.audio = new Audio(this.theme);
-
-		const player1 = new Character(this, 0, this.theme);
-		const player2 = new Character(this, 1, this.theme);
-		this.players.push(player1, player2);
-
 		this.gamepadAdapter = new GamepadAdapter(this.ctx);
 
-		this.countdown = new Countdown(this.ctx, this.theme);
-		this.gui = new Gui(this.ctx, this.theme, 2);
-
-		this.renderer = new Renderer(this.ctx, this.theme);
-
+        this.initTheme(themes[this.getTheme()]);
 		this.manageState();
+        this.initThemeControl();
+        this.renderer = new Renderer(this.ctx);
 		this.start();
 	}
 
 	showLoader() {
 		const loader = document.querySelector(".loader");
-		const progress = loader.querySelector("progress");
+		const progress = loader?.querySelector("progress");
+		if (!loader || !progress) {
+			this.ctx.canvas.classList.add("fade-in");
+			return;
+		}
+
 		loader.removeAttribute("hidden");
 		this.ctx.canvas.addEventListener("loadingEvent", ((e: LoadingEvent) => {
 			progress.value = e.detail.progress;
@@ -63,6 +60,41 @@ export class Game {
 			}
 		}) as EventListener);
 	}
+
+    getTheme() {
+        const themeSelect = document.querySelector('#theme') as HTMLSelectElement;
+        return themeSelect.value as keyof typeof themes;
+    }
+
+    initThemeControl() {
+        const themeSelect = document.querySelector('#theme') as HTMLSelectElement;
+        themeSelect.addEventListener('change', () => {
+            this.switchTheme(themes[this.getTheme()])
+        });
+    }
+
+    initTheme(theme: themeConfig) {
+        this.theme = new Theme(this.ctx, theme);
+        this.obstacles = [];
+        this.scene = new Scene(this, this.theme);
+        this.audio = new Audio(this.theme);
+        this.players = [];
+        const player1 = new Character(this, 0, this.theme);
+		const player2 = new Character(this, 1, this.theme);
+		this.players.push(player1, player2);
+        this.countdown = new Countdown(this.ctx, this.theme);
+        this.gui = new Gui(this.ctx, this.theme, 2);
+    }
+
+    switchTheme(config: themeConfig) {
+        const theme = new Theme(this.ctx, config);
+        this.theme = theme;
+        // todo: go into all components and switch things out: countdown, gui, etc
+        this.obstacles = [];
+        this.scene.switchTheme(theme);
+        this.audio.switchTheme(theme);
+        this.players.forEach(player => player.switchTheme(theme));
+    }
 
 	manageState() {
 		this.ctx.canvas.addEventListener("countdown", ((e: FinishEvent) => {

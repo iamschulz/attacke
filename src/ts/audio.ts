@@ -2,14 +2,15 @@ import { Theme } from "./../../public/themes/theme";
 
 export class Audio {
 	private theme: Theme;
-	private ctx: AudioContext;
+	private ctx: AudioContext | null;
 	private vol: GainNode;
 	private sounds: SoundLibrary;
+    private bgm: AudioBufferSourceNode;
 	private bgmPlaying: boolean;
 
 	constructor(theme: Theme) {
 		this.theme = theme;
-		this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+		this.ctx = new (window.AudioContext || window.AudioContext)();
 		this.vol = this.ctx.createGain();
 		this.vol.connect(this.ctx.destination);
 		this.vol.gain.value = 0;
@@ -47,6 +48,10 @@ export class Audio {
 	}
 
 	public async play(sound: string): Promise<void> {
+        if (!this.ctx) { 
+            return;
+        }
+
 		if (this.sounds[this.getAudioUrl(sound)].playing) {
 			return;
 		}
@@ -69,6 +74,10 @@ export class Audio {
 	}
 
 	public async playBGM(): Promise<void> {
+        if (!this.ctx) { 
+            return;
+        }
+
 		if (this.bgmPlaying) {
 			return;
 		}
@@ -78,13 +87,13 @@ export class Audio {
 		bgmVol.gain.value = 0.25;
 
 		const arrayBuffer = await this.getSoundFile(this.getAudioUrl(this.theme.config.bgAudio));
-		const source = this.ctx.createBufferSource();
+		this.bgm = this.ctx.createBufferSource();
 
 		this.ctx.decodeAudioData(arrayBuffer, (audioBuffer) => {
-			source.buffer = audioBuffer;
-			source.connect(bgmVol);
-			source.loop = true;
-			source.start();
+			this.bgm.buffer = audioBuffer;
+			this.bgm.connect(bgmVol);
+			this.bgm.loop = true;
+			this.bgm.start();
 		});
 
 		this.bgmPlaying = true;
@@ -104,4 +113,15 @@ export class Audio {
 			}
 		});
 	}
+    
+    public switchTheme(theme: Theme) {
+        this.ctx
+        this.theme = theme;
+		this.populateSoundLibrary();
+        if (this.bgmPlaying) {
+            this.bgm.stop();
+            this.bgmPlaying = false;
+            this.playBGM();
+        }
+    }
 }

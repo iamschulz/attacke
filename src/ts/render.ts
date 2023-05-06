@@ -1,17 +1,14 @@
-import { Theme } from "../../public/themes/theme";
 import { clamp } from "./util";
 
 export class Renderer {
 	ctx: CanvasRenderingContext2D;
-	theme: Theme;
 	fps: number;
 	ticker: number;
 	counter: number;
 	oldTimeStamp: number = 0;
 
-	constructor(ctx: CanvasRenderingContext2D, theme: Theme) {
+	constructor(ctx: CanvasRenderingContext2D) {
 		this.ctx = ctx;
-		this.theme = theme;
 		this.fps = 60; // aim for 60fps
 		this.counter = 0;
 		this.initTicker();

@@ -7,6 +7,7 @@ import { Obstacle } from "./obstacle";
 import { Theme } from "../../public/themes/theme";
 
 export class Character {
+    private game: Game;
 	private ctx: CanvasRenderingContext2D;
 	private audio: Audio;
 	private theme: Theme;
@@ -35,6 +36,7 @@ export class Character {
 	};
 
 	constructor(game: Game, player: number, theme: Theme) {
+        this.game = game;
 		this.ctx = game.ctx;
 		this.audio = game.audio;
 		this.theme = theme;
@@ -167,7 +169,7 @@ export class Character {
 
 		// move by stick
 		document.addEventListener("gamepadStickMove", (event: GamepadStickEvent) => {
-			if (event.detail.gamepadId !== this.player || event.detail.stickIndex !== 0) {
+			if (event.detail?.gamepadId !== this.player || event.detail.stickIndex !== 0) {
 				return;
 			}
 
@@ -185,7 +187,7 @@ export class Character {
 
 			document.addEventListener("gamepadButtonDown", (event: GamepadButtonEvent) => {
 				if (
-					event.detail.gamepadId === this.player &&
+					event.detail?.gamepadId === this.player &&
 					event.detail.buttonIndex === config.gamepad.attack &&
 					!this.action.cooldown
 				) {
@@ -204,7 +206,7 @@ export class Character {
 
 			document.addEventListener("gamepadButtonDown", (event: GamepadButtonEvent) => {
 				if (
-					event.detail.gamepadId === this.player &&
+					event.detail?.gamepadId === this.player &&
 					event.detail.buttonIndex === config.gamepad.block &&
 					!this.action.cooldown
 				) {
@@ -433,7 +435,9 @@ export class Character {
 			end: Math.PI * -1 - Math.PI / 8 + ((i + 1) * Math.PI) / 4,
 		}));
 
-		const direction = zones.find((zone) => this.orientation >= zone.start && this.orientation < zone.end);
+		const direction = this.theme.config.turnSprites ?
+            undefined :
+            zones.find((zone) => this.orientation >= zone.start && this.orientation < zone.end);
 
 		let action = "default";
 		if ((this.active && this.action.blocking) || this.action.blocking) {
@@ -444,7 +448,7 @@ export class Character {
 			action = "move";
 		}
 
-		return this.theme.config.players[this.player][action][direction.zone];
+		return this.theme.config.players[this.player][action][direction?.zone || 'x'];
 	}
 
 	private draw(frameCount: number): void {
@@ -505,9 +509,15 @@ export class Character {
 	private onNextTick(tick: TickEvent): void {
 		this.executeCharacterActions();
 
-		for (let i = 0; i < tick.detail.frameSkip; i++) {
+		for (let i = 0; i < tick.detail!.frameSkip; i++) {
 			this.executeCharacterActions();
 		}
-		this.draw(tick.detail.frameCount);
+		this.draw(tick.detail!.frameCount);
 	}
+
+    public switchTheme(theme: Theme) {
+        this.theme = theme;
+        this.obstacles = this.game.obstacles;
+        this.obstacle = this.createObstacle(`player${this.player}`);
+    }
 }

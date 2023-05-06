@@ -24,6 +24,7 @@ body {
 	font-family: var(--font-base);
 	background-color: var(--background-color);
 	color: var(--font-color);
+	color-scheme: dark;
 }
 
 :is(h1, h2, h3, h4, h5, h6) {
@@ -260,6 +261,26 @@ input[type="range"]::-moz-range-thumb {
 	border-radius: 0;
 	background: var(--accent-color);
 	border: 0;
+}
+
+select {
+	position: relative;
+	margin: 0.5rem 0;
+	padding: 0.3rem 1ch;
+	background: var(--dark-color);
+	font-family: var(--font-base);
+	font-size: 1.2rem;
+	color: var(--font-color);
+	border: 0;
+}
+
+select::after {
+	content: "";
+	justify-self: end;
+	width: 0.8em;
+	height: 0.5em;
+	background-color: var(--font-base);
+	clip-path: polygon(100% 0%, 0 0%, 50% 100%);
 }
 
 .credits {

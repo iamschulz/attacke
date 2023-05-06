@@ -1,10 +1,8 @@
-import config from "../../config.json" assert { type: "json" };
 import { Theme } from "../../public/themes/theme";
 
 export class Gui {
 	private ctx: CanvasRenderingContext2D;
 	private theme: Theme;
-	private players: number;
 	private score: number[];
 
 	constructor(ctx: CanvasRenderingContext2D, theme: Theme, players: number) {
