@@ -5,14 +5,16 @@ import { Game } from "./main";
 import { clamp, rotate } from "./util";
 import { Obstacle } from "./obstacle";
 import { Theme } from "../../public/themes/theme";
+import { GamepadAdapter } from "./gamepadAdapter";
 
 export class Character {
-    private game: Game;
+	private game: Game;
 	private ctx: CanvasRenderingContext2D;
 	private audio: Audio;
 	private theme: Theme;
 	private active: boolean;
 	private collider: Collider2d;
+	private gamepads: GamepadAdapter;
 	private players: Character[];
 	private obstacles: Obstacle[];
 	private player: number;
@@ -36,11 +38,12 @@ export class Character {
 	};
 
 	constructor(game: Game, player: number, theme: Theme) {
-        this.game = game;
+		this.game = game;
 		this.ctx = game.ctx;
 		this.audio = game.audio;
 		this.theme = theme;
 		this.active = false;
+		this.gamepads = game.gamepadAdapter;
 		this.collider = game.collider;
 		this.players = game.players;
 		this.obstacles = game.obstacles;
@@ -168,58 +171,82 @@ export class Character {
 		});
 
 		// move by stick
-		document.addEventListener("gamepadStickMove", (event: GamepadStickEvent) => {
-			if (event.detail?.gamepadId !== this.player || event.detail.stickIndex !== 0) {
-				return;
-			}
+		document.addEventListener(
+			"gamepadStickMove",
+			(event: GamepadStickEvent) => {
+				if (
+					event.detail?.gamepadId !== this.player ||
+					event.detail.stickIndex !== 0
+				) {
+					return;
+				}
 
-			this.action.movingX = event.detail.stick.x;
-			this.action.movingY = event.detail.stick.y;
-		});
+				this.action.movingX = event.detail.stick.x;
+				this.action.movingY = event.detail.stick.y;
+			}
+		);
 
 		// attack
 		config.controls[this.player].attack.forEach((key: string) => {
 			document.addEventListener("keydown", (event: KeyboardEvent) => {
-				if (this.active && event.code === key && event.repeat === false && !this.action.cooldown) {
-					this.action.attacking = true;
-				}
-			});
-
-			document.addEventListener("gamepadButtonDown", (event: GamepadButtonEvent) => {
 				if (
-					event.detail?.gamepadId === this.player &&
-					event.detail.buttonIndex === config.gamepad.attack &&
+					this.active &&
+					event.code === key &&
+					event.repeat === false &&
 					!this.action.cooldown
 				) {
 					this.action.attacking = true;
 				}
 			});
+
+			document.addEventListener(
+				"gamepadButtonDown",
+				(event: GamepadButtonEvent) => {
+					if (
+						event.detail?.gamepadId === this.player &&
+						event.detail.buttonIndex === config.gamepad.attack &&
+						!this.action.cooldown
+					) {
+						this.action.attacking = true;
+					}
+				}
+			);
 		});
 
 		// block
 		config.controls[this.player].block.forEach((key: string) => {
 			document.addEventListener("keydown", (event: KeyboardEvent) => {
-				if (this.active && event.code === key && event.repeat === false && !this.action.cooldown) {
-					this.action.blocking = true;
-				}
-			});
-
-			document.addEventListener("gamepadButtonDown", (event: GamepadButtonEvent) => {
 				if (
-					event.detail?.gamepadId === this.player &&
-					event.detail.buttonIndex === config.gamepad.block &&
+					this.active &&
+					event.code === key &&
+					event.repeat === false &&
 					!this.action.cooldown
 				) {
 					this.action.blocking = true;
 				}
 			});
+
+			document.addEventListener(
+				"gamepadButtonDown",
+				(event: GamepadButtonEvent) => {
+					if (
+						event.detail?.gamepadId === this.player &&
+						event.detail.buttonIndex === config.gamepad.block &&
+						!this.action.cooldown
+					) {
+						this.action.blocking = true;
+					}
+				}
+			);
 		});
 	}
 
 	private captureEvent(event: KeyboardEvent): void {
 		if (
 			event.target === this.ctx.canvas &&
-			config.controls.find((x) => Object.values(x).some((y) => y.includes(event.code)))
+			config.controls.find((x) =>
+				Object.values(x).some((y) => y.includes(event.code))
+			)
 		) {
 			event.preventDefault();
 		}
@@ -231,7 +258,9 @@ export class Character {
 	}
 
 	private collide(): void {
-		const obstacles = this.obstacles.filter((obstacle) => obstacle.getId() !== this.obstacle.getId());
+		const obstacles = this.obstacles.filter(
+			(obstacle) => obstacle.getId() !== this.obstacle.getId()
+		);
 		obstacles.forEach((obstacle) => {
 			const collision = this.obstacle.collidesWith(obstacle);
 			const friction = 0.8;
@@ -240,17 +269,22 @@ export class Character {
 				return;
 			}
 
-			this.velocity.x = (this.velocity.x + collision.overlapV.x * -1) * friction;
-			this.velocity.y = (this.velocity.y + collision.overlapV.y * -1) * friction;
+			this.velocity.x =
+				(this.velocity.x + collision.overlapV.x * -1) * friction;
+			this.velocity.y =
+				(this.velocity.y + collision.overlapV.y * -1) * friction;
 
 			this.audio.play(this.theme.config.collideAudio);
+			this.gamepads.vibrate(this.player, 0.3, 0.3, 80);
 		});
 	}
 
 	private move(): void {
 		const { position, velocity, action } = this;
-		const newX = position.x + action.movingX * this.speed + velocity.x * this.speed;
-		const newY = position.y + action.movingY * this.speed + velocity.y * this.speed;
+		const newX =
+			position.x + action.movingX * this.speed + velocity.x * this.speed;
+		const newY =
+			position.y + action.movingY * this.speed + velocity.y * this.speed;
 
 		position.x = newX;
 		position.y = newY;
@@ -275,12 +309,16 @@ export class Character {
 		});
 
 		this.velocity.x = clamp(
-			(action.movingX ? this.velocity.x + action.movingX : this.velocity.x * 0.8) * this.speed,
+			(action.movingX
+				? this.velocity.x + action.movingX
+				: this.velocity.x * 0.8) * this.speed,
 			this.maxVelocity * -1,
 			this.maxVelocity
 		);
 		this.velocity.y = clamp(
-			(action.movingY ? this.velocity.y + action.movingY : this.velocity.y * 0.8) * this.speed,
+			(action.movingY
+				? this.velocity.y + action.movingY
+				: this.velocity.y * 0.8) * this.speed,
 			this.maxVelocity * -1,
 			this.maxVelocity
 		);
@@ -288,8 +326,12 @@ export class Character {
 
 	private turn(): void {
 		const otherPlayer = this.player === 0 ? 1 : 0;
-		const orientationTarget: coordinates = this.players[otherPlayer]?.position || { x: 0, y: 0 };
-		const angle = Math.atan2(orientationTarget.y - this.position.y, orientationTarget.x - this.position.x);
+		const orientationTarget: coordinates = this.players[otherPlayer]
+			?.position || { x: 0, y: 0 };
+		const angle = Math.atan2(
+			orientationTarget.y - this.position.y,
+			orientationTarget.x - this.position.x
+		);
 		this.orientation = angle;
 
 		const obstacle = {
@@ -315,7 +357,9 @@ export class Character {
 			this.orientation
 		);
 
-		this.obstacle.editObstacle(this.theme.config.turnSprites ? rotatedObstacle : obstacle);
+		this.obstacle.editObstacle(
+			this.theme.config.turnSprites ? rotatedObstacle : obstacle
+		);
 	}
 
 	private attack(): void {
@@ -359,11 +403,15 @@ export class Character {
 
 	private strike(): void {
 		const otherPlayerId = this.player === 0 ? 1 : 0;
-		const otherPlayer: rectangle = this.players[otherPlayerId].obstacle?.getObject();
+		const otherPlayer: rectangle =
+			this.players[otherPlayerId].obstacle?.getObject();
+
+		this.gamepads.vibrate(this.player, 0.7, 0.7, 100);
 
 		const blocked = this.players[otherPlayerId].action.blocking;
 		if (blocked) {
 			this.audio.play(this.theme.config.blockAudio);
+			this.gamepads.vibrate(otherPlayerId, 0.3, 0.3, 100);
 			return;
 		}
 
@@ -384,8 +432,19 @@ export class Character {
 			new Vector(weaponPosition.d.x, weaponPosition.d.y),
 		]);
 
-		const hit = this.collider.testPolygonPolygon(weaponPolygon, otherPlayerPolygon) as boolean;
+		const hit = this.collider.testPolygonPolygon(
+			weaponPolygon,
+			otherPlayerPolygon
+		) as boolean;
 		if (hit) {
+			setTimeout(() => {
+				this.gamepads.vibrate(this.player, 1, 0, 100);
+			}, 0);
+			setTimeout(() => {
+				this.gamepads.vibrate(this.player, 1, 0, 380);
+			}, 190);
+
+			this.gamepads.vibrate(otherPlayerId, 1, 1, 500);
 			this.finish();
 		}
 	}
@@ -397,6 +456,7 @@ export class Character {
 			},
 		});
 		this.audio.play(this.theme.config.winAudio);
+
 		this.ctx.canvas.dispatchEvent(finish);
 	}
 
@@ -435,25 +495,40 @@ export class Character {
 			end: Math.PI * -1 - Math.PI / 8 + ((i + 1) * Math.PI) / 4,
 		}));
 
-		const direction = this.theme.config.turnSprites ?
-            undefined :
-            zones.find((zone) => this.orientation >= zone.start && this.orientation < zone.end);
+		const direction = this.theme.config.turnSprites
+			? undefined
+			: zones.find(
+					(zone) =>
+						this.orientation >= zone.start &&
+						this.orientation < zone.end
+			  );
 
 		let action = "default";
 		if ((this.active && this.action.blocking) || this.action.blocking) {
 			action = "block";
-		} else if ((this.active && this.action.attacking) || this.action.attacking) {
+		} else if (
+			(this.active && this.action.attacking) ||
+			this.action.attacking
+		) {
 			action = "attack";
-		} else if (this.active && (this.action.movingX || this.action.movingY)) {
+		} else if (
+			this.active &&
+			(this.action.movingX || this.action.movingY)
+		) {
 			action = "move";
 		}
 
-		return this.theme.config.players[this.player][action][direction?.zone || 'x'];
+		return this.theme.config.players[this.player][action][
+			direction?.zone || "x"
+		];
 	}
 
 	private draw(frameCount: number): void {
 		this.ctx.save();
-		this.ctx.translate(Math.round(this.position.x + this.size / 2), Math.round(this.position.y + this.size / 2));
+		this.ctx.translate(
+			Math.round(this.position.x + this.size / 2),
+			Math.round(this.position.y + this.size / 2)
+		);
 
 		this.theme.config.turnSprites && this.ctx.rotate(this.orientation);
 
@@ -474,7 +549,12 @@ export class Character {
 
 		// character
 		this.theme.config.shader && this.theme.config.shader(this.ctx);
-		this.theme.drawSprite(this.ctx, this.getSprite().name, { x: this.size / -2, y: this.size / -2 }, frameCount);
+		this.theme.drawSprite(
+			this.ctx,
+			this.getSprite().name,
+			{ x: this.size / -2, y: this.size / -2 },
+			frameCount
+		);
 
 		this.ctx.restore();
 
@@ -515,9 +595,9 @@ export class Character {
 		this.draw(tick.detail!.frameCount);
 	}
 
-    public switchTheme(theme: Theme) {
-        this.theme = theme;
-        this.obstacles = this.game.obstacles;
-        this.obstacle = this.createObstacle(`player${this.player}`);
-    }
+	public switchTheme(theme: Theme) {
+		this.theme = theme;
+		this.obstacles = this.game.obstacles;
+		this.obstacle = this.createObstacle(`player${this.player}`);
+	}
 }

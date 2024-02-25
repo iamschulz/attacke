@@ -119,4 +119,15 @@ export class GamepadAdapter {
 
 		document.dispatchEvent(GamepadStickMove);
 	}
+
+	vibrate(index: number, weak: number, strong: number, duration: number) {
+		const gamepads = navigator.getGamepads();
+
+		gamepads[index]?.vibrationActuator?.playEffect("dual-rumble", {
+			startDelay: 0,
+			duration: duration,
+			weakMagnitude: weak,
+			strongMagnitude: strong,
+		});
+	}
 }
